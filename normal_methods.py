@@ -51,6 +51,7 @@ def load_data(dataset:str):
     else:
         raise NameError("Not implemented yet")
     return df
+
 class Normalizator():
     def __init__(self,dataset:str):
         """
