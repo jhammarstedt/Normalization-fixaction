@@ -1,13 +1,16 @@
 import pandas as pd
 import numpy as np
-import plotly.express as px
-from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 from scipy.stats import zscore
 from sklearn.preprocessing import StandardScaler
 import math
 from sklearn.preprocessing import MinMaxScaler
-
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.neighbors import KNeighborsClassifier
+import os
+from sys import platform
 def z_score(data):
     scaler = StandardScaler()
     data_without_cat = data.select_dtypes(exclude='category')
@@ -67,6 +70,9 @@ class Normalizator():
         self.dataset = dataset
         self.df = load_data(self.dataset)
         self.df_norm = None
+        
+    
+
     def normalize(self,method="zscore",reset=False):
         # just to make sure the data is not tampered with before normalization
         if reset:
@@ -90,8 +96,30 @@ class Normalizator():
 
         plt.show()
 
-    def run_model(model=None):
+    def lblEncoder(self,col):
+        le = LabelEncoder()
+        le.fit(self.df[col])
+        self.df[col] = le.transform(self.df[col])
+        return self.df
+
+    def run_model(self,model=None):
         if not model:
             raise TypeError("Need to specify model type")
         elif model =="knn":
-            pass
+            categorical = self.df_norm.select_dtypes('category')
+            self.df_norm[categorical.columns] = categorical.apply(LabelEncoder().fit_transform)
+            X = self.df_norm.iloc[:,:-1]
+            y = self.df_norm.iloc[:,-1]
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            knn = KNeighborsClassifier(n_neighbors=3)
+            knn.fit(X_train, y_train)
+            y_pred = knn.predict(X_test)
+            print(confusion_matrix(y_test, y_pred))
+            print(classification_report(y_test, y_pred))
+
+
+if __name__== "__main__":
+    n = Normalizator("wine")
+    n.normalize(method="zscore")
+    n.visuals()
+    n.run_model(model="knn")
