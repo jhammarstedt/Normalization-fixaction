@@ -1,27 +1,34 @@
+import os
+from sys import platform
 import pandas as pd
 import numpy as np
-import plotly.express as px
-from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 from scipy.stats import zscore
 from sklearn.preprocessing import StandardScaler
 import math
 from sklearn.preprocessing import MinMaxScaler
 
+try: 
+    import plotly.express as px
+    from plotly.subplots import make_subplots
+except ImportError: 
+    pass
+
 def z_score(data):
+    data_copy = data.copy()
     scaler = StandardScaler()
-    data_without_cat = data.select_dtypes(exclude='category')
-    data[data_without_cat.columns] = scaler.fit_transform(data_without_cat)
-    return data
+    data_without_cat = data_copy.select_dtypes(exclude='category')
+    data_copy[data_without_cat.columns] = scaler.fit_transform(data_without_cat)
+    return data_copy
         
 def tanh_norm(df):
     #Reduce influence of the values in the tail of the distribution
 
-        m = np.mean(df.iloc[:,:-1], axis=0) # array([16.25, 26.25])
-        std = np.std(df.iloc[:,:-1], axis=0) # array([17.45530005, 22.18529919])
+    m = np.mean(df.iloc[:,:-1], axis=0) # array([16.25, 26.25])
+    std = np.std(df.iloc[:,:-1], axis=0) # array([17.45530005, 22.18529919])
 
-        tanh_df = 0.5 * (np.tanh(0.01 * ((df.iloc[:,:-1] - m) / std)) + 1)
-        return tanh_df
+    tanh_df = 0.5 * (np.tanh(0.01 * ((df.iloc[:,:-1] - m) / std)) + 1)
+    return tanh_df
 
 def min_max(data):
     scaler = MinMaxScaler()
@@ -53,7 +60,7 @@ def load_data(dataset:str):
     return df
 
 class Normalizator():
-    def __init__(self,dataset:str):
+    def __init__(self, dataset:str):
         """
         Class that reads data and performs normalization methods
         Args:
