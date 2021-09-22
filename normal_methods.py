@@ -88,3 +88,9 @@ class Normalizator():
         plt.tight_layout() 
 
         plt.show()
+
+    def run_model(model=None):
+        if not model:
+            raise TypeError("Need to specify model type")
+        elif model =="knn":
+            pass
