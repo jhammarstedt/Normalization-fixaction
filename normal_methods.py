@@ -34,10 +34,18 @@ def min_max(data):
     scaler = MinMaxScaler()
     data.iloc[:,:-1] = scaler.fit_transform(data.iloc[:,:-1])
     return data
+
 def pareto_scaling(df):
-    pass
+    data_copy = df.copy()
+    data_without_cat = data_copy.select_dtypes(exclude='category')
+    mean = np.mean(data_without_cat, axis=0)
+    std = np.std(data_without_cat, axis=0)
+    data_copy[data_without_cat.columns] = (data_without_cat - mean) / np.sqrt(std)
+    return data_copy
+
 def variable_stability_scaling():
     pass
+
 def load_data(dataset:str):
     cwd = os.getcwd()
     separator = '\\' if platform == 'win32' else '/'
@@ -89,10 +97,12 @@ class Normalizator():
             self.df_norm = z_score(self.df)
         elif method == "tanh":
             self.df_norm = tanh_norm(self.df) 
-        elif method == "zscore":
-            self.df_norm = z_score(self.df)
-        elif method == "zscore":
-            self.df_norm = z_score(self.df)
+        elif method == "pareto":
+            print("pareto scaling")
+            self.df_norm = pareto_scaling(self.df)
+        else:
+            raise NotImplementedError("This normalization is not implemented yet")
+        
     def visuals(self):
         fig, axes = plt.subplots(3,4,figsize=(15,15))
         for i,el in enumerate(list(self.df.columns.values)[:-1]):
