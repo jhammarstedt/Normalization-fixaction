@@ -48,6 +48,13 @@ def load_data(dataset:str):
                   'marital_status': 'category', 'occupation': 'category', 'relationship': 'category', 'race': 'category', 'sex': 'category', 
                   'capital_gain': np.int64, 'capital_loss': np.int64, 'hours_per_week': np.int64, 'native_country': 'category', 'income': 'category'}
         df = pd.read_csv(cwd + separator + 'datasets' + separator + 'adult' + separator + 'adult.data', delimiter=', ', names=column_names, dtype=dtypes, index_col=False)
+    elif dataset == "comp":
+        df = pd.read_csv(
+            cwd + separator + 'datasets' + separator + 'comp' + separator + 'machine.data',
+            delimiter=",",
+            header=None)
+        df = df.iloc[:,2:]
+        df = df.sample(frac=1).reset_index(drop=True)
     else:
         raise NameError("Not implemented yet")
     return df
