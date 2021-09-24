@@ -1,5 +1,6 @@
 import os
 from sys import platform
+import numpy as np
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,7 +14,7 @@ try:
     from plotly.subplots import make_subplots
 except ImportError: 
     pass
-
+LINUX = False #! just quick fix for now
 def z_score(data):
     
     data_copy = data.copy()
@@ -51,12 +52,21 @@ def load_data(dataset:str):
     cwd = os.getcwd()
     separator = '\\' if platform == 'win32' else '/'
     if dataset == "wine":
-        w = pd.read_csv(r"C:\Users\johan\Documents\GitHub\kth_private\project_course\datasets\wine\winequality-white.csv",delimiter=";")
-        r  = pd.read_csv(r"C:\Users\johan\Documents\GitHub\kth_private\project_course\datasets\wine\winequality-red.csv",delimiter=";")
+        dtypes = {'fixed acidity': 'float64', 'volatile acidity': 'float64', 'citric acid': 'float64',
+         'residual sugar': 'float64', 'chlorides': 'float64', 'free sulfur dioxide': 'float64',
+          'total sulfur dioxide': 'float64', 'density': 'float64', 'pH': 'float64', 'sulphates': 'float64',
+           'alcohol': 'float64', 'quality': 'int64'}
+        if not LINUX: 
+            w = pd.read_csv(r"datasets\wine\winequality-white.csv",delimiter=";",dtype=dtypes)
+            r  = pd.read_csv(r"datasets\wine\winequality-red.csv",delimiter=";",dtype=dtypes)
+        else:
+            raise NotImplementedError("Fix linux env")
         r['color'] = 'red'
         w['color'] = 'white'
         df = r.append(w)
         df = df.sample(frac=1).reset_index(drop=True)
+        print(df.head())
+        df.color = df.color.astype('category')
     elif dataset == "adult":
         column_names = ['age', 'workclass', 'fnlwgt', 'education', 'education_num', 'marital_status', 'occupation', 'relationship',
                         'race', 'sex', 'capital_gain', 'capital_loss', 'hours_per_week', 'native_country', 'income']
@@ -112,10 +122,10 @@ class Normalizator():
         
         if save:
             # save the data to a new file
-            self.df_norm.to_csv(f"output/post_norma_data/{self.dataset}_{method}.csv")
-
-
-
+            if not LINUX:
+                self.df_norm.to_csv(rf"output\post_norma_data\{self.dataset}_{method}.csv", index=False)
+            else:
+                self.df_norm.to_csv(rf"output/post_norm_data/{self.dataset}_{method}.csv")
     def visuals(self):
         fig, axes = plt.subplots(3,4,figsize=(15,15))
         for i,el in enumerate(list(self.df.columns.values)[:-1]):
@@ -139,7 +149,7 @@ class Normalizator():
 if __name__== "__main__":
     n = Normalizator("wine")
     n.normalize(method="zscore", save= True)
-    n.visuals()
+    #n.visuals()
 
 
 

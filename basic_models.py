@@ -2,6 +2,10 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+import glob
+import json
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
@@ -29,4 +33,13 @@ def run_model(self,model=None):
         print(classification_report(y_test, y_pred))
 
 if __name__ == "__main__":
-    run_model()
+    path = os.path.join(os.getcwd(),"output\post_norma_data")
+    files = glob.glob(os.path.join(path,"*.csv"))
+    config = json.load(open("dataset_config.json"))["datasets"]
+    for f in files:
+        dataset_name = (os.path.basename(f).split('_'))[0]
+        dtype = config[dataset_name]["dtype"]
+        df = pd.read_csv(f,dtype=dtype)
+    
+    print(df.head())
+    #run_model()
