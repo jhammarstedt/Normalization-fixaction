@@ -9,6 +9,9 @@ This project in collaboration with Spotify, focusing on the effect of normalizat
 * João Ferreira - [JoaoFerreira100](https://github.com/JoaoFerreira100)
 
 ## Setup
+
+```pip install -r requirements.txt ```
+
 Use the dataset_config to write info and call the dataset, so we can do such between the files
 
 Once everything is done we run it all from the run_pipeline.py script 
