@@ -15,6 +15,7 @@ except ImportError:
     pass
 
 def z_score(data):
+    
     data_copy = data.copy()
     scaler = StandardScaler()
     data_without_cat = data_copy.select_dtypes(exclude='category')
@@ -92,9 +93,12 @@ class Normalizator():
         
     
 
-    def normalize(self,method="zscore",reset=False):
+    def normalize(self,method="zscore",reset=False, save=False):
         # just to make sure the data is not tampered with before normalization
+        # if reset is true, the data is reset to the original state
+        # if save is true, the data is saved to a new file in the post_norma_data folder, the relative path
         if reset:
+            # Load the data again
             self.df = load_data(self.dataset) 
         if method == "zscore": 
             self.df_norm = z_score(self.df)
@@ -106,6 +110,12 @@ class Normalizator():
         else:
             raise NotImplementedError("This normalization is not implemented yet")
         
+        if save:
+            # save the data to a new file
+            self.df_norm.to_csv(f"output/post_norma_data/{self.dataset}_{method}.csv")
+
+
+
     def visuals(self):
         fig, axes = plt.subplots(3,4,figsize=(15,15))
         for i,el in enumerate(list(self.df.columns.values)[:-1]):
@@ -123,24 +133,14 @@ class Normalizator():
         self.df[col] = le.transform(self.df[col])
         return self.df
 
-    def run_model(self,model=None):
-        if not model:
-            raise TypeError("Need to specify model type")
-        elif model =="knn":
-            categorical = self.df_norm.select_dtypes('category')
-            self.df_norm[categorical.columns] = categorical.apply(LabelEncoder().fit_transform)
-            X = self.df_norm.iloc[:,:-1]
-            y = self.df_norm.iloc[:,-1]
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            knn = KNeighborsClassifier(n_neighbors=3)
-            knn.fit(X_train, y_train)
-            y_pred = knn.predict(X_test)
-            print(confusion_matrix(y_test, y_pred))
-            print(classification_report(y_test, y_pred))
+
 
 
 if __name__== "__main__":
     n = Normalizator("wine")
-    n.normalize(method="zscore")
+    n.normalize(method="zscore", save= True)
     n.visuals()
-    n.run_model(model="knn")
+
+
+
+    #n.run_model(model="knn")

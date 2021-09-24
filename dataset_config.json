@@ -1,0 +1,31 @@
+{
+    "datasets":[
+        {"dataset_name": "wine",
+            "dataset_folder": "datasets/wine",
+            "dataset_type": "csv",
+            "pred_type" : "regression"
+        },
+        {"dataset_name": "adult",
+            "dataset_folder": "datasets/adult",
+            "dataset_type": "data",
+            "pred_type" : "classification"
+        },
+        {"dataset_name": "compHardware",
+            "dataset_path": "datasets/compHard",
+            "dataset_type": "csv",
+            "pred_type" : "regression"
+        },
+        {"dataset_name": "breastCancer",
+            "dataset_path": "datasets/bcancer",
+            "dataset_type": "csv",
+            "pred_type" : "both"
+        },
+        {"dataset_name": "mechanicalHardware",
+            "dataset_path": "datasets/mechHard",
+            "dataset_type": "csv",
+            "pred_type" : "classification"
+        }
+        
+    ]
+
+}

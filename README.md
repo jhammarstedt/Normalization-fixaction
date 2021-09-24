@@ -2,10 +2,22 @@
 <img src ="https://miro.medium.com/max/271/0*d5_CPfpuJ2uIjIk3" align= "right">
 This project in collaboration with Spotify, focusing on the effect of normalization, including standardizing, scaling and more, on the training and inference of machine learning models.A lot of focus in machine learning is on models and less so on data and how to treat it. In this project we will focus on the impact of data on model training.
 
-
-
 ## Authors
 * Johan Hammarstedt - [jhammarstedt](https://github.com/jhammarstedt)
 * Isak Persson - [isakper](https://github.com/isakper)
 * Matej Sestak - [sestys](https://github.com/sestys)
 * João Ferreira - [JoaoFerreira100](https://github.com/JoaoFerreira100)
+
+## Setup
+Use the dataset_config to write info and call the dataset, so we can do such between the files
+
+Once everything is done we run it all from the run_pipeline.py script 
+
+Structure:
+1. Normal_methods.py : Data is normalized and saved to post_norm_data as CSV files
+2. basic_models.py and adv_models.py:  Ouput in output/post_norm_data is read and models are trained
+    * Basic are saved to output/training/models/basic
+    * Networks are saved to output/training/models/networks
+    * model output (accuracy, training info etc) are saved to: output/training/training_results/{model_name}_{score_type}_{timestamp}
+3. gather_results.py: Results are read in appropriate format, cleaned, compared and displayed in proper format, 
+
