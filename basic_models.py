@@ -30,7 +30,7 @@ class ModelClass():
         """#!ISAK From this method you can return whatever you want to get to your output """
         
         for dataset_name in self.datasets.keys():
-            
+            print(f"#############DATASET NAME AND METHOD: {dataset_name} ############")
             df = self.datasets[dataset_name]["data"].copy() #copy dataframe 
             
             categorical = df.select_dtypes('category')
