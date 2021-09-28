@@ -9,39 +9,39 @@ parser.add_argument('-m', '--method', default='zscore', help='Normalization meth
 args = parser.parse_args()
 
 
-def main():
+def normalize(verbose=False):
     norm = Normalizator(dataset=args.dataset)
-    norm.normalize(args.method)
-    print(norm.df.describe())
-    print(norm.df_norm.describe())
+    norm.normalize(args.method, save=True)
+    if verbose:
+        print(norm.df.describe())
+        print(norm.df_norm.describe())
 
 
-if __name__ == "__main__":
+def main():
     """Here we run the pipeline
-    we can run with all datasets or with a specific one
-    """
+        we can run with all datasets or with a specific one
+        """
 
-    #NORMALIZATION - MAT
-    #Write the input and output of your normalization method here
-    #! Output results in output/post_norma_data with proper names (e.g wine_zscore.csv)
+    # NORMALIZATION - MAT
+    # Write the input and output of your normalization method here
+    # ! Output results in output/post_norma_data with proper names (e.g wine_zscore.csv)
 
+    normalize()
+    # BASIC MODELS - JOHAN
+    # * Reads normalized data from output/post_norma_data in the specified format and runs classifiers
+    # * Reads the unnormalized data from datasets
 
-
-
-
-    #BASIC MODELS - JOHAN
-    #* Reads normalized data from output/post_norma_data in the specified format and runs classifiers
-    #* Reads the unnormalized data from datasets
-
-
-
-    #Adv MODELS - JOAO
+    # Adv MODELS - JOAO
 
     # EVALUATION - ISAK
     # Write the input you want to evaluate here and the output you will produce
 
-    #data_file = sys.argv[1]
-    #print(data_file)
+    # data_file = sys.argv[1]
+    # print(data_file)
     # print(args.all)
-    #normal_methods.run_normal_methods(data_file)
-    #basic_models.run_basic_models(data_file)
+    # normal_methods.run_normal_methods(data_file)
+    # basic_models.run_basic_models(data_file)
+
+
+if __name__ == "__main__":
+    main()
