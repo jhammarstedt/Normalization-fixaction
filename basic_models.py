@@ -32,7 +32,9 @@ class ModelClass():
          
         #model_class =["knn","logreg","svm"]
         for dataset_name in self.datasets.keys():
+            
             df = self.datasets[dataset_name]["data"].copy() #copy dataframe 
+            
             categorical = df.select_dtypes('category')
             
             df[categorical.columns] = categorical.apply(LabelEncoder().fit_transform)
