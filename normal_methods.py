@@ -133,7 +133,7 @@ class Normalizator:
             self.df_norm = pareto_scaling(self.df)
         elif method == 'minmax':
             self.df_norm = min_max(self.df)
-        elif method == 'variableScaling':
+        elif method == 'variablescaling':
             self.df_norm = variable_scaling(self.df)
         else:
             raise NotImplementedError("This normalization is not implemented yet")
@@ -159,11 +159,11 @@ class Normalizator:
         return self.df
 
 
-if __name__ == "__main__":
-    n = Normalizator("adult")
-    n.normalize(method="minmax", save=True)
-    print(n.df.describe())
-    print(n.df_norm.describe())
-    # n.visuals()
+# if __name__ == "__main__":
+#     n = Normalizator("adult")
+#     n.normalize(method="minmax", save=True)
+#     print(n.df.describe())
+#     print(n.df_norm.describe())
+#     # n.visuals()
 
     # n.run_model(model="knn")

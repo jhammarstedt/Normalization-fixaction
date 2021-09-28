@@ -25,12 +25,10 @@ SEPARATOR = '\\' if platform == 'win32' else '/'
 class ModelClass():
     def __init__(self,data:dict) -> None:
         self.datasets = data
-        
-
 
     def run_models(self):
-         
-        #model_class =["knn","logreg","svm"]
+        """#!ISAK From this method you can return whatever you want to get to your output """
+        
         for dataset_name in self.datasets.keys():
             
             df = self.datasets[dataset_name]["data"].copy() #copy dataframe 
@@ -54,7 +52,8 @@ class ModelClass():
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
             for model in model_class:
-                self.train_model(X_train,X_test,y_train,y_test,model=model)            
+                #Runs the model and returns the predictions on the test set
+                y_pred = self.train_model(X_train,X_test,y_train,y_test,model=model)            
             
     def evaluate(self,y_test,y_pred, type="regression"):
         if type == "regression":
@@ -76,6 +75,10 @@ class ModelClass():
 
                
     def train_model(self,X_train,X_test,y_train,y_test,model=None):
+        """
+        Here we train the models and get access to data for evaluation
+        
+        """
         if not model:
             raise TypeError("Need to specify model type")
         elif model =="knn":
@@ -121,6 +124,7 @@ class ModelClass():
         else:
             raise TypeError("Model type not supported")
 
+        return y_pred
 def read_data(dataset_name):
     path = os.path.join(os.getcwd(),"output\post_norma_data")
     files = glob.glob(os.path.join(path,f"{dataset_name}*.csv"))
@@ -132,12 +136,16 @@ def read_data(dataset_name):
     config = json.load(open("dataset_config.json"))["datasets"]
     datasets = {}
     for f in files:
-        #dataset_name = (os.path.basename(f).split('_'))[0]
+        
+        norm_method = os.path.basename(f)
+        print(f"Training model for {norm_method.split('_')[1].upper()}")
+        
         dtype = config[dataset_name]["dtype"]
         df = pd.read_csv(f,dtype=dtype)
-        datasets[dataset_name] = {"data":df,"unormalized":load_data(dataset_name),"target":config[dataset_name]["target"],"pred_type":config[dataset_name]["pred_type"],"pred_type":config[dataset_name]["pred_type"]}
+        datasets[norm_method] = {"data":df,"target":config[dataset_name]["target"],"pred_type":config[dataset_name]["pred_type"],"pred_type":config[dataset_name]["pred_type"]}
 
-        
+    #adding unnormalized data for comparison
+    datasets[f"{dataset_name}_UnNorm"] = {"data":load_data(dataset_name),"target":config[dataset_name]["target"],"pred_type":config[dataset_name]["pred_type"]}
     return datasets
 
 def run_basic_models(dataset)->str:

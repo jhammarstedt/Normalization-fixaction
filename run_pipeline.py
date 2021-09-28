@@ -20,7 +20,14 @@ def get_datasets():
     
 def normalize(dataset,verbose=False):
     norm = Normalizator(dataset=dataset)
-    norm.normalize(args.method, save=True)
+    if args.method == "all":
+        method = ["zscore","minmax","tanh","variablescaling"]
+        for m in method:
+            print("Running normalization method: {}".format(m))
+            norm.normalize(method=m,save=True)
+        
+    else:
+        norm.normalize(args.method, save=True)
     if verbose:
         print(norm.df.describe())
         print(norm.df_norm.describe())

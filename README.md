@@ -25,3 +25,26 @@ Once everything is done we run it all from the run_pipeline.py script
     * model output (accuracy, training info etc) are saved to: output/training/training_results/{model_name}_{score_type}_{timestamp}
 3. gather_results.py: Results are read in appropriate format, cleaned, compared and displayed in proper format, 
 
+
+
+## Run
+To run the pipeline choose dataset and method with flags -d and -m
+`python run_pipeline.py -d wine -m zscore`
+
+To run for everyrun:
+`python run_pipeline.py -d all -m all
+
+### Parameters
+datasets: 
+
+* wine
+* compHardware
+* adult
+* breastCancer
+* mechanicalHardware
+
+methods:
+* zscore
+* tanh
+* minmax
+* variablescaling
