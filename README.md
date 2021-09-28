@@ -16,7 +16,8 @@ Use the dataset_config to write info and call the dataset, so we can do such bet
 
 Once everything is done we run it all from the run_pipeline.py script 
 
-Structure:
+### Structure:
+0. Check the datasets_config and add all relevant info to your dataset here & the same if we add more in the future
 1. Normal_methods.py : Data is normalized and saved to post_norm_data as CSV files
 2. basic_models.py and adv_models.py:  Ouput in output/post_norm_data is read and models are trained
     * Basic are saved to output/training/models/basic
