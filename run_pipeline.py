@@ -1,15 +1,22 @@
-# Python script to run the pipeline
 import sys
 import argparse
-parser = argparse.ArgumentParser()
-import normal_methods,basic_models
+from normal_methods import Normalizator
 
-parser.add_argument("-a","--all",default = "all_data",help="Run with all datasets")
+parser = argparse.ArgumentParser()
+parser.add_argument("-a", "--all", default="all_data", help="Run with all datasets")
+parser.add_argument('-d', '--dataset', default='adult', help='Dataset to use')
+parser.add_argument('-m', '--method', default='zscore', help='Normalization method to use')
 args = parser.parse_args()
 
+
+def main():
+    norm = Normalizator(dataset=args.dataset)
+    norm.normalize(args.method)
+    print(norm.df.describe())
+    print(norm.df_norm.describe())
+
+
 if __name__ == "__main__":
-    data_file = sys.argv[1]
-    print(data_file)
-    print(args.all)
+    main()
     #normal_methods.run_normal_methods(data_file)
     #basic_models.run_basic_models(data_file)
