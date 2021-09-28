@@ -28,16 +28,20 @@ class ModelClass():
         #model_class =["knn","logreg","svm"]
         for dataset_name in self.datasets.keys():
             df = self.datasets[dataset_name]["data"].copy() #copy dataframe 
-
-            if self.datasets[dataset_name]["pred_type"] =="regression":
-                model_class = ["svr","XGBR"]
-            else: #classification
-                model_class = ["svm","knn","logreg"]
-
             categorical = df.select_dtypes('category')
             
             df[categorical.columns] = categorical.apply(LabelEncoder().fit_transform)
             target = self.datasets[dataset_name]["target"]
+            
+
+            if self.datasets[dataset_name]["pred_type"] =="regression":
+                model_class = ["svr","XGBR"]
+            elif self.datasets[dataset_name]["pred_type"]=="classification": 
+                model_class = ["svm","knn","logreg"]
+            else: #both, run all
+                raise TypeError("Prediction type not supported")
+                #model_class = ["svm","knn","logreg","XGBR","svr"]
+      
             X = df.drop([target], axis=1)
             y = df[target]
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -110,13 +114,18 @@ class ModelClass():
         else:
             raise TypeError("Model type not supported")
 
-def read_data()->dict:
+def read_data(dataset_name):
     path = os.path.join(os.getcwd(),"output\post_norma_data")
-    files = glob.glob(os.path.join(path,"*.csv"))
+    files = glob.glob(os.path.join(path,f"{dataset_name}*.csv"))
+    if len(files)==0:
+        return None #no data here
+    
+    files.append(os.path.join(path,f"{dataset_name}_target.csv"))
+
     config = json.load(open("dataset_config.json"))["datasets"]
     datasets = {}
     for f in files:
-        dataset_name = (os.path.basename(f).split('_'))[0]
+        #dataset_name = (os.path.basename(f).split('_'))[0]
         dtype = config[dataset_name]["dtype"]
         df = pd.read_csv(f,dtype=dtype)
         datasets[dataset_name] = {"data":df,"target":config[dataset_name]["target"],"pred_type":config[dataset_name]["pred_type"],"pred_type":config[dataset_name]["pred_type"]}
@@ -125,7 +134,16 @@ def read_data()->dict:
         
     return datasets
 
-if __name__ == "__main__":
-    data = read_data()
-    model = ModelClass(data)
-    model.run_models()
+def run_basic_models(dataset)->str:
+    data = read_data(dataset)
+    if data is None:
+        return "No data available for dataset"
+    else:
+        print("Running basic models for dataset {}".format(dataset))
+        models = ModelClass(data)
+        models.run_models()
+        return "Models trained"
+# if __name__ == "__main__":
+#     data = read_data()
+#     model = ModelClass(data)
+#     model.run_models()

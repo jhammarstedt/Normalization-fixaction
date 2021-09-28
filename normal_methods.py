@@ -8,6 +8,7 @@ from scipy.stats import zscore
 from sklearn.preprocessing import StandardScaler
 import math
 from sklearn.preprocessing import MinMaxScaler
+import json
 
 try: 
     import plotly.express as px
@@ -51,22 +52,22 @@ def variable_stability_scaling():
 def load_data(dataset:str):
     cwd = os.getcwd()
     separator = '\\' if platform == 'win32' else '/'
+    config = json.load(open("dataset_config.json"))["datasets"]
     if dataset == "wine":
-        dtypes = {'fixed acidity': 'float64', 'volatile acidity': 'float64', 'citric acid': 'float64',
-         'residual sugar': 'float64', 'chlorides': 'float64', 'free sulfur dioxide': 'float64',
-          'total sulfur dioxide': 'float64', 'density': 'float64', 'pH': 'float64', 'sulphates': 'float64',
-           'alcohol': 'float64', 'quality': 'int64'}
+        dtypes = config["wine"]["dtype"]
         if not LINUX: 
-            w = pd.read_csv(r"datasets\wine\winequality-white.csv",delimiter=";",dtype=dtypes)
-            r  = pd.read_csv(r"datasets\wine\winequality-red.csv",delimiter=";",dtype=dtypes)
+            # w = pd.read_csv(r"datasets\wine\winequality-white.csv",delimiter=";",dtype=dtypes)
+            # r  = pd.read_csv(r"datasets\wine\winequality-red.csv",delimiter=";",dtype=dtypes)
+            df = pd.read_csv(r"datasets\wine\wine.csv",delimiter=",",dtype=dtypes)
         else:
             raise NotImplementedError("Fix linux env")
-        r['color'] = 'red'
-        w['color'] = 'white'
-        df = r.append(w)
-        df = df.sample(frac=1).reset_index(drop=True)
+        # r['color'] = 'red'
+        # w['color'] = 'white'
+        # df = r.append(w)
+        # df = df.sample(frac=1).reset_index(drop=True)
+        #df.color = df.color.astype('category')
         print(df.head())
-        df.color = df.color.astype('category')
+        
     elif dataset == "adult":
         column_names = ['age', 'workclass', 'fnlwgt', 'education', 'education_num', 'marital_status', 'occupation', 'relationship',
                         'race', 'sex', 'capital_gain', 'capital_loss', 'hours_per_week', 'native_country', 'income']

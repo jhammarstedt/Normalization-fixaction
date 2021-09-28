@@ -8,31 +8,43 @@
             "dtype": {"fixed acidity": "float64", "volatile acidity": "float64", "citric acid": "float64",
                 "residual sugar": "float64", "chlorides": "float64", "free sulfur dioxide": "float64",
                  "total sulfur dioxide": "float64", "density": "float64", "pH": "float64", "sulphates": "float64",
-                  "alcohol": "float64", "quality": "float64"}
+                  "alcohol": "float64", "quality": "float64","color": "category"}
         },
         "adult":{
         "dataset_name": "adult",
             "dataset_folder": "datasets/adult",
             "dataset_type": "data",
-            "pred_type" : "classification"
+            "pred_type" : "classification",
+            "target": "TBA",
+
+        "dtype":"TBA"
         },
         "compHardware":
         {"dataset_name": "compHardware",
             "dataset_path": "datasets/compHard",
             "dataset_type": "csv",
-            "pred_type" : "regression"
+            "pred_type" : "regression",
+            "dtype":"TBA",
+            "target": "TBA"
+
+            
         },
         "breastCancer":
         {"dataset_name": "breastCancer",
             "dataset_path": "datasets/bcancer",
             "dataset_type": "csv",
-            "pred_type" : "both"
+            "pred_type" : "classification",
+            "dtype":"TBA",
+            "target": "TBA" 
+
         },
         "mechanicalHardware":
         {"dataset_name": "mechanicalHardware",
             "dataset_path": "datasets/mechHard",
             "dataset_type": "csv",
-            "pred_type" : "classification"
+            "pred_type" : "classification",
+            "dtype":"TBA",
+            "target": "TBA"
         }
         
     }
