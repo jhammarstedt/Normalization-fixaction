@@ -1,53 +1,64 @@
-# Python script to run the pipeline
 import sys
 import argparse
+
 import json
 parser = argparse.ArgumentParser()
 #import normal_methods,basic_models
 from normal_methods import Normalizator
 from basic_models import run_basic_models
 
+parser = argparse.ArgumentParser()
+#parser.add_argument("-a", "--all", default="all_data", help="Run with all datasets")
+parser.add_argument('-d', '--dataset', default='adult', help='Dataset to use')
+parser.add_argument('-m', '--method', default='zscore', help='Normalization method to use')
+args = parser.parse_args()
 
-#parser.add_argument("-a","--all",default = "all_data",help="Run with all datasets")
-#args = parser.parse_args()
 
 def get_datasets():
     config = json.load(open("dataset_config.json"))["datasets"]
     return (config.keys())
+    
+def normalize(dataset,verbose=False):
+    norm = Normalizator(dataset=dataset)
+    norm.normalize(args.method, save=True)
+    if verbose:
+        print(norm.df.describe())
+        print(norm.df_norm.describe())
+
+
+def main():
+    """
+    Here we run the pipeline
+        we can run with all datasets or with a specific one
+    """
+    datasets = get_datasets()
+    if args.dataset == "all":
+        for dataset in datasets:
+            normalize(dataset,verbose=True)
+            output = run_basic_models(dataset)
+            print(output)
+    else: #run for a single one
+        if not args.dataset in datasets:
+            print("Dataset not found")
+            sys.exit(1)
+        #! NORMALIZATION - MAT
+        #* Write the input and output of your normalization method here
+        #* Output results in output/post_norma_data with proper names (e.g wine_zscore.csv)
+        normalize(args.dataset)
+
+        #! BASIC MODELS - JOHAN
+        #* Reads normalized data from output/post_norma_data in the specified format and runs classifiers
+        #* Reads the unnormalized data from datasets
+    
+        output = run_basic_models(args.dataset) #TODO ISAK CHANGE THIS TO THE OUTPUT YOU WANT TO DISPLAY
+        print(output)
+    
+    #! Adv MODELS - JOAO
+
+    #! EVALUATION - ISAK
+    # Write the input you want to evaluate here and the output you will produce
+
 
 
 if __name__ == "__main__":
-    """Here we run the pipeline
-    we can run with all datasets or with a specific one
-    """
-    #if args.all:
-    datasets = get_datasets()
-
-    #NORMALIZATION - MAT
-    #Write the input and output of your normalization method here
-    # Normalize all data with the different methods
-    #   or just one dataset args (to be added)
-    #! Output results in output/post_norma_data with proper names (e.g wine_zscore.csv)
-    
-
-
-    #BASIC MODELS - JOHAN
-    #* Reads normalized data from output/post_norma_data in the specified format and runs classifiers
-    #* Reads the unnormalized data from datasets
-    for dataset in datasets:
-        output = run_basic_models(dataset)
-        print(output)
-    #outputs a string for now, ISAK specifies what output he wants
-    
-
-
-    #Adv MODELS - JOAO
-
-    # EVALUATION - ISAK
-    # Write the input you want to evaluate here and the output you will produce
-    
-    #data_file = sys.argv[1]
-    #print(data_file)
-    # print(args.all)
-    #normal_methods.run_normal_methods(data_file)
-    #basic_models.run_basic_models(data_file)
+    main()

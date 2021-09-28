@@ -17,6 +17,11 @@ from xgboost.sklearn import XGBRegressor
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.metrics import mean_absolute_error,mean_squared_error,r2_score
+from normal_methods import load_data
+from sys import platform
+
+
+SEPARATOR = '\\' if platform == 'win32' else '/'
 class ModelClass():
     def __init__(self,data:dict) -> None:
         self.datasets = data
@@ -90,7 +95,7 @@ class ModelClass():
         elif model=="logreg":
             # Logistic Regression
             print("**********Logistic Regression************")
-            logreg = LogisticRegression()
+            logreg = LogisticRegression()#solver='lbfgs', max_iter=100)
             logreg.fit(X_train, y_train)
             y_pred = logreg.predict(X_test)
             self.evaluate(y_test,y_pred,type="classification")
@@ -120,7 +125,7 @@ def read_data(dataset_name):
     if len(files)==0:
         return None #no data here
     
-    files.append(os.path.join(path,f"{dataset_name}_target.csv"))
+    #files.append(os.path.join(path,f"{dataset_name}_.csv"))
 
     config = json.load(open("dataset_config.json"))["datasets"]
     datasets = {}
@@ -128,13 +133,13 @@ def read_data(dataset_name):
         #dataset_name = (os.path.basename(f).split('_'))[0]
         dtype = config[dataset_name]["dtype"]
         df = pd.read_csv(f,dtype=dtype)
-        datasets[dataset_name] = {"data":df,"target":config[dataset_name]["target"],"pred_type":config[dataset_name]["pred_type"],"pred_type":config[dataset_name]["pred_type"]}
-        if dataset_name=="wine":
-            df["color"] = df["color"].astype('category')
+        datasets[dataset_name] = {"data":df,"unormalized":load_data(dataset_name),"target":config[dataset_name]["target"],"pred_type":config[dataset_name]["pred_type"],"pred_type":config[dataset_name]["pred_type"]}
+
         
     return datasets
 
 def run_basic_models(dataset)->str:
+    """Function that runs the model training"""
     data = read_data(dataset)
     if data is None:
         return "No data available for dataset"

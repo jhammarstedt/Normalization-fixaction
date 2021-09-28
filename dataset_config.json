@@ -15,10 +15,15 @@
             "dataset_folder": "datasets/adult",
             "dataset_type": "data",
             "pred_type" : "classification",
-            "target": "TBA",
-
-        "dtype":"TBA"
+            "target": "income",
+            "dtype": {"age": "float64", "workclass": "category", "fnlwgt": "float64", "education": "category",
+                "education_num": "float64",
+                "marital_status": "category", "occupation": "category", "relationship": "category",
+                "race": "category", "sex": "category",
+                "capital_gain": "float64", "capital_loss": "float64", "hours_per_week": "float64",
+                "native_country": "category", "income": "category"}
         },
+        
         "compHardware":
         {"dataset_name": "compHardware",
             "dataset_path": "datasets/compHard",
