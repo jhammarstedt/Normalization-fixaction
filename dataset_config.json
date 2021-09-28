@@ -4,6 +4,7 @@
             "dataset_folder": "datasets/wine",
             "dataset_type": "csv",
             "pred_type" : "regression",
+            "target": "quality",
             "dtype": {"fixed acidity": "float64", "volatile acidity": "float64", "citric acid": "float64",
                 "residual sugar": "float64", "chlorides": "float64", "free sulfur dioxide": "float64",
                  "total sulfur dioxide": "float64", "density": "float64", "pH": "float64", "sulphates": "float64",
