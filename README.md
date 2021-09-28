@@ -31,8 +31,10 @@ Once everything is done we run it all from the run_pipeline.py script
 To run the pipeline choose dataset and method with flags -d and -m
 `python run_pipeline.py -d wine -m zscore`
 
-To run for everyrun:
-`python run_pipeline.py -d all -m all
+To run for everything:
+`python run_pipeline.py -d wine -m all
+
+Note that running for all datasets is not working yet since all have yet to be added.
 
 ### Parameters
 datasets: 

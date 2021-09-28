@@ -36,7 +36,7 @@ def normalize(dataset,verbose=False):
 def main():
     """
     Here we run the pipeline
-        we can run with all datasets or with a specific one
+        we can run with all datasets (not implemeted yet) or with a specific one
     """
     datasets = get_datasets()
     if args.dataset == "all":
