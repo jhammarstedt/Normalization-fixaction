@@ -126,7 +126,7 @@ class ModelClass():
 
         return y_pred
 def read_data(dataset_name):
-    path = os.path.join(os.getcwd(),"output\post_norma_data")
+    path = os.path.join(os.getcwd(),f"output{SEPARATOR}post_norma_data")
     files = glob.glob(os.path.join(path,f"{dataset_name}*.csv"))
     if len(files)==0:
         return None #no data here
