@@ -102,6 +102,12 @@ def load_data(dataset: str,get_config=False):
             header=None,engine='python')
         df = df.iloc[:, 2:]
         df = df.sample(frac=1).reset_index(drop=True)
+    elif dataset == "breastCancer":
+        dtypes = config["breastCancer"]["dtype"]
+        column_names = ["ID","Diagnosis","radius_1" ,"texture_1" ,"perimeter_1" ,"area_1" ,"smoothness_1" ,"compactness_1" ,"concavity_1" ,"concave_points_1" ,"symmetry_1" ,"fractal_dimension_1" ,"radius_2" ,"texture_2" ,"perimeter_2" ,"area_2" ,"smoothness_2" ,"compactness_2" ,"concavity_2" ,"concave_points_2" ,"symmetry_2" ,"fractal_dimension_2" ,"radius_3" ,"texture_3" ,"perimeter_3" ,"area_3" ,"smoothness_3" ,"compactness_3" ,"concavity_3" ,"concave_points_3" ,"symmetry_3" ,"fractal_dimension_3" ]
+        
+        df = pd.read_csv(rf"datasets{SEPARATOR}breastCancer{SEPARATOR}wdbc.data", delimiter=",",names=column_names, dtype=dtypes,engine='python')
+   
     else:
         raise NameError("Not implemented yet")
     if get_config:

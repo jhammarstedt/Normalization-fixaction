@@ -35,12 +35,21 @@
             
         },
         "breastCancer":
-        {"dataset_name": "breastCancer",
-            "dataset_path": "datasets/bcancer",
-            "dataset_type": "csv",
-            "pred_type" : "classification",
-            "dtype":"TBA",
-            "target": "TBA" 
+        {"dataset_name": "wdbc",
+            "dataset_path": "datasets/breastCancer",
+            "dataset_type": "data",
+            "pred_type" : "classification",            
+            "target": "Diagnosis" ,
+			"dtype":{"ID": "int64", "Diagnosis":"category",
+					 "radius_1":"float64","texture_1":"float64","perimeter_1":"float64","area_1":"float64",
+					 "smoothness_1":"float64","compactness_1":"float64","concavity_1":"float64",
+					 "concave_points_1":"float64","symmetry_1":"float64","fractal_dimension_1":"float64",
+					 "radius_2":"float64","texture_2":"float64","perimeter_2":"float64","area_2":"float64",
+					 "smoothness_2":"float64","compactness_2":"float64","concavity_2":"float64",
+					 "concave_points_2":"float64","symmetry_2":"float64","fractal_dimension_2":"float64",
+					 "radius_3":"float64","texture_3":"float64","perimeter_3":"float64","area_3":"float64",
+					 "smoothness_3":"float64","compactness_3":"float64","concavity_3":"float64",
+					 "concave_points_3":"float64","symmetry_3":"float64","fractal_dimension_3":"float64"}
 
         },
         "mechanicalHardware":
