@@ -1,23 +1,27 @@
 import sys
 import argparse
-
+import pickle
 import json
 parser = argparse.ArgumentParser()
 #import normal_methods,basic_models
 from normal_methods import Normalizator
 from basic_models import run_basic_models
+from datetime import datetime
+from sys import platform
+
 
 parser = argparse.ArgumentParser()
 #parser.add_argument("-a", "--all", default="all_data", help="Run with all datasets")
 parser.add_argument('-d', '--dataset', default='adult', help='Dataset to use')
 parser.add_argument('-m', '--method', default='zscore', help='Normalization method to use')
 args = parser.parse_args()
+SEPARATOR = '\\' if platform == 'win32' else '/'
 
 
 def get_datasets():
     config = json.load(open("dataset_config.json"))["datasets"]
     return (config.keys())
-    
+
 def normalize(dataset,verbose=False):
     norm = Normalizator(dataset=dataset)
     if args.method == "all":
@@ -25,7 +29,7 @@ def normalize(dataset,verbose=False):
         for m in method:
             print("Running normalization method: {}".format(m))
             norm.normalize(method=m,save=True)
-        
+
     else:
         norm.normalize(args.method, save=True)
     if verbose:
@@ -40,10 +44,12 @@ def main():
     """
     datasets = get_datasets()
     if args.dataset == "all":
+        output = {}
         for dataset in datasets:
             normalize(dataset,verbose=True)
-            output = run_basic_models(dataset)
-            print(output)
+            output_dataset = run_basic_models(dataset)
+            output = {**output, **output_dataset}
+
     else: #run for a single one
         if not args.dataset in datasets:
             print("Dataset not found")
@@ -56,10 +62,14 @@ def main():
         #! BASIC MODELS - JOHAN
         #* Reads normalized data from output/post_norma_data in the specified format and runs classifiers
         #* Reads the unnormalized data from datasets
-    
-        output = run_basic_models(args.dataset) #TODO ISAK CHANGE THIS TO THE OUTPUT YOU WANT TO DISPLAY
-        print(output)
-    
+
+        output = run_basic_models(args.dataset) #TODO: ISAK CHANGE THIS TO THE OUTPUT YOU WANT TO DISPLAY
+
+    #print(output)
+
+    with open('output' + SEPARATOR + 'results' + SEPARATOR + start_time + '.pkl', 'wb') as fp:
+        pickle.dump(output, fp)
+
     #! Adv MODELS - JOAO
 
     #! EVALUATION - ISAK
@@ -68,4 +78,6 @@ def main():
 
 
 if __name__ == "__main__":
+    now = datetime.now()
+    start_time = now.strftime("%d%m%Y %H%M%S")
     main()
