@@ -31,7 +31,7 @@
             "target": "ERP",
             "dtype": {"vendo name": "category", "Model Name": "category", "machine cycle time": "float64", "MMIN": "float64",
               "MMAX": "float64", "CACH": "float64", "CHMIN": "float64", "CHMAX": "float64", "PRP": "float64",
-              "ERP": "float64"}
+              "ERP": "float64"},
             "dtype":"TBA",
             "target": "TBA"
 

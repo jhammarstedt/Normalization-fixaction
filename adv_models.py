@@ -1,6 +1,7 @@
 from numpy import loadtxt
 from keras.models import Sequential
 from keras.layers import Dense
+import tensorflow as tf
 
 import numpy as np
 import pandas as pd
@@ -88,7 +89,11 @@ class ModelClass():
             model.add(Dense(size, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
         
-        model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+        if pred_type == "classification":
+            model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+        else:
+            model.compile(loss=tf.keras.losses.MeanAbsolutePercentageError(), optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), 
+                          metrics=[tf.keras.metrics.MeanSquaredError()])
         model.fit(X_train, y_train, epochs=self.epochs, batch_size=self.batch_size)
         
         _, accuracy = model.evaluate(X_train, y_train)
