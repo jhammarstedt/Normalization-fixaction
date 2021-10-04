@@ -6,6 +6,7 @@ parser = argparse.ArgumentParser()
 #import normal_methods,basic_models
 from normal_methods import Normalizator
 from basic_models import run_basic_models
+from adv_models import run_advanced_models
 
 parser = argparse.ArgumentParser()
 #parser.add_argument("-a", "--all", default="all_data", help="Run with all datasets")
@@ -44,6 +45,8 @@ def main():
             normalize(dataset,verbose=True)
             output = run_basic_models(dataset)
             print(output)
+            output = run_advanced_models(args.dataset) #TODO ISAK CHANGE THIS TO THE OUTPUT YOU WANT TO DISPLAY
+            print(output)
     else: #run for a single one
         if not args.dataset in datasets:
             print("Dataset not found")
@@ -58,6 +61,9 @@ def main():
         #* Reads the unnormalized data from datasets
     
         output = run_basic_models(args.dataset) #TODO ISAK CHANGE THIS TO THE OUTPUT YOU WANT TO DISPLAY
+        print(output)
+        
+        output = run_advanced_models(args.dataset) #TODO ISAK CHANGE THIS TO THE OUTPUT YOU WANT TO DISPLAY
         print(output)
     
     #! Adv MODELS - JOAO

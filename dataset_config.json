@@ -40,7 +40,7 @@
             "dataset_type": "data",
             "pred_type" : "classification",            
             "target": "Diagnosis" ,
-			"dtype":{"ID": "int64", "Diagnosis":"category",
+			"dtype":{"ID": "float64", "Diagnosis":"category",
 					 "radius_1":"float64","texture_1":"float64","perimeter_1":"float64","area_1":"float64",
 					 "smoothness_1":"float64","compactness_1":"float64","concavity_1":"float64",
 					 "concave_points_1":"float64","symmetry_1":"float64","fractal_dimension_1":"float64",
