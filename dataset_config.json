@@ -31,11 +31,7 @@
             "target": "ERP",
             "dtype": {"vendo name": "category", "Model Name": "category", "machine cycle time": "float64", "MMIN": "float64",
               "MMAX": "float64", "CACH": "float64", "CHMIN": "float64", "CHMAX": "float64", "PRP": "float64",
-              "ERP": "float64"},
-            "dtype":"TBA",
-            "target": "TBA"
-
-
+              "ERP": "float64"}
         },
         "breastCancer":
         {"dataset_name": "wdbc",
@@ -54,14 +50,6 @@
 					 "smoothness_3":"float64","compactness_3":"float64","concavity_3":"float64",
 					 "concave_points_3":"float64","symmetry_3":"float64","fractal_dimension_3":"float64"}
 
-        },
-        "mechanicalHardware":
-        {"dataset_name": "mechanicalHardware",
-            "dataset_path": "datasets/mechHard",
-            "dataset_type": "csv",
-            "pred_type" : "classification",
-            "dtype":"TBA",
-            "target": "TBA"
         }
 }
 }

@@ -24,16 +24,15 @@ SEPARATOR = '\\' if platform == 'win32' else '/'
 
 
 class ModelClass():
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict, seed=0) -> None:
         self.datasets = data
+        self.seed = seed
 
     def run_models(self):
         """#!ISAK From this method you can return whatever you want to get to your output """
 
         results = {}
         for dataset_name in self.datasets.keys():
-
-            df = self.datasets[dataset_name]["data"].copy()  # copy dataframe
 
             print(f"#############DATASET NAME AND METHOD: {dataset_name} ############")
             df = self.datasets[dataset_name]["data"].copy() #copy dataframe
@@ -53,7 +52,7 @@ class ModelClass():
 
             X = df.drop([target], axis=1)
             y = df[target]
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=self.seed)
 
             results[dataset_name] = {"pred_type": self.datasets[dataset_name]["pred_type"]}
             for model in model_class:
@@ -160,14 +159,14 @@ def read_data(dataset_name):
     return datasets
 
 
-def run_basic_models(dataset) -> str:
+def run_basic_models(args, dataset) -> str:
     """Function that runs the model training"""
     data = read_data(dataset)
     if data is None:
         return "No data available for dataset"
     else:
         print("Running basic models for dataset {}".format(dataset))
-        models = ModelClass(data)
+        models = ModelClass(data, args.seed)
         results = models.run_models()
         return results
 # if __name__ == "__main__":

@@ -16,47 +16,55 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.metrics import mean_absolute_error,mean_squared_error,r2_score
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 SEPARATOR = '\\' if platform == 'win32' else '/'
 
+
 class ModelClass():
-    def __init__(self,data:dict, NN_layers=3, NN_size=32, epochs=50, batch_size=10) -> None:
+    def __init__(self, data: dict, NN_layers=3, NN_size=32, epochs=1, batch_size=10, seed=1) -> None:
         self.datasets = data
         self.layers = NN_layers
         self.layer_size = NN_size
         self.epochs = epochs
         self.batch_size = batch_size
+        self.seed = seed
 
     def run_models(self):
         """#!ISAK From this method you can return whatever you want to get to your output """
-        
+
+        results = {}
         for dataset_name in self.datasets.keys():
             print(f"############# DATASET NAME AND METHOD: {dataset_name} ############")
-            df = self.datasets[dataset_name]["data"].copy() #copy dataframe 
-            
+            df = self.datasets[dataset_name]["data"].copy()  # copy dataframe
+
             categorical = df.select_dtypes('category')
-            
+
             df[categorical.columns] = categorical.apply(LabelEncoder().fit_transform)
             target = self.datasets[dataset_name]["target"]
-            
 
-            if self.datasets[dataset_name]["pred_type"] =="regression":
+            if self.datasets[dataset_name]["pred_type"] == "regression":
                 ### TODO: adapt model
                 print("regression")
-            elif self.datasets[dataset_name]["pred_type"]=="classification": 
+            elif self.datasets[dataset_name]["pred_type"] == "classification":
                 ### TODO: adapt model
                 print("classification")
-            else: #both, run all
+            else:  # both, run all
                 raise TypeError("Prediction type not supported")
-      
+
             X = df.drop([target], axis=1)
             y = df[target]
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=self.seed)
 
-            y_pred = self.train_model(X_train,X_test,y_train,y_test, self.datasets[dataset_name]["pred_type"])    
-            
-    def evaluate(self,y_test,y_pred, type="regression"):
+            y_pred = self.train_model(X_train, X_test, y_train, y_test, self.datasets[dataset_name]["pred_type"])
+            results[dataset_name] = {"pred_type": self.datasets[dataset_name]["pred_type"]}
+            model_class = ['NN']
+            for model in model_class:
+                y_pred = self.train_model(X_train, X_test, y_train, y_test, self.datasets[dataset_name]["pred_type"])
+                results[dataset_name][model] = {'pred': list(y_pred), 'true': list(y_test)}
+            return results
+
+    def evaluate(self, y_test, y_pred, type="regression"):
         if type == "regression":
             mae = mean_absolute_error(y_test, y_pred)
             mse = mean_squared_error(y_test, y_pred)
@@ -74,70 +82,75 @@ class ModelClass():
             print("Accuracy score")
             print(accuracy_score(y_test, y_pred))
 
-    def train_model(self,X_train,X_test,y_train,y_test, pred_type="classification"):
+    def train_model(self, X_train, X_test, y_train, y_test, pred_type="classification"):
         """
         Here we train the models and get access to data for evaluation
         
         """
         print("**********NN************")
         model = Sequential()
-        
+
         size = self.layer_size
         model.add(Dense(size, input_dim=X_train.shape[1], activation='relu'))
         for i in range(1, self.layers - 1):
             size = int(size / 2)
             model.add(Dense(size, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
-        
+
         if pred_type == "classification":
             model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
         else:
-            model.compile(loss=tf.keras.losses.MeanAbsolutePercentageError(), optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), 
+            model.compile(loss=tf.keras.losses.MeanAbsolutePercentageError(),
+                          optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
                           metrics=[tf.keras.metrics.MeanSquaredError()])
         model.fit(X_train, y_train, epochs=self.epochs, batch_size=self.batch_size)
-        
+
         _, accuracy = model.evaluate(X_train, y_train)
-        print('Accuracy: %.2f' % (accuracy*100))
-        
-        y_pred =  model.predict(X_test)
+        print('Accuracy: %.2f' % (accuracy * 100))
+
+        y_pred = model.predict(X_test)
         # print(y_test)
         # print(y_pred)
         if (pred_type == "classification"):
-            y_pred = np.where( np.array(y_pred) > 0.5, 1, 0)
-        self.evaluate(y_test,y_pred,type=pred_type)
+            y_pred = np.where(np.array(y_pred) > 0.5, 1, 0)
+        self.evaluate(y_test, y_pred, type=pred_type)
         print("************************")
 
         return y_pred
 
+
 def read_data(dataset_name):
-    path = os.path.join(os.getcwd(),rf"output{SEPARATOR}post_norma_data")
-    files = glob.glob(os.path.join(path,f"{dataset_name}*.csv"))
-    if len(files)==0:
-        return None #no data here
-    
-    #files.append(os.path.join(path,f"{dataset_name}_.csv"))
+    path = os.path.join(os.getcwd(), rf"output{SEPARATOR}post_norma_data")
+    files = glob.glob(os.path.join(path, f"{dataset_name}*.csv"))
+    if len(files) == 0:
+        return None  # no data here
+
+    # files.append(os.path.join(path,f"{dataset_name}_.csv"))
 
     config = json.load(open("dataset_config.json"))["datasets"]
     datasets = {}
     for f in files:
-        
         norm_method = os.path.basename(f)
         print(f"Training model for {norm_method.split('_')[1].upper()}")
-        
-        dtype = config[dataset_name]["dtype"]
-        df = pd.read_csv(f,dtype=dtype)
-        datasets[norm_method] = {"data":df,"target":config[dataset_name]["target"],"pred_type":config[dataset_name]["pred_type"],"pred_type":config[dataset_name]["pred_type"]}
 
-    #adding unnormalized data for comparison
-    datasets[f"{dataset_name}_UnNorm"] = {"data":load_data(dataset_name),"target":config[dataset_name]["target"],"pred_type":config[dataset_name]["pred_type"]}
+        dtype = config[dataset_name]["dtype"]
+        df = pd.read_csv(f, dtype=dtype)
+        datasets[norm_method] = {"data": df, "target": config[dataset_name]["target"],
+                                 "pred_type": config[dataset_name]["pred_type"],
+                                 "pred_type": config[dataset_name]["pred_type"]}
+
+    # adding unnormalized data for comparison
+    datasets[f"{dataset_name}_UnNorm"] = {"data": load_data(dataset_name), "target": config[dataset_name]["target"],
+                                          "pred_type": config[dataset_name]["pred_type"]}
     return datasets
-    
-def run_advanced_models(dataset)->str:
+
+
+def run_advanced_models(args, dataset) -> str:
     data = read_data(dataset)
     if data is None:
         return "No data available for dataset"
     else:
-        print("Running advanced models for dataset {}".format(dataset))
-        models = ModelClass(data, )
-        models.run_models()
-        return "Models trained"
+        print("Running basic models for dataset {}".format(dataset))
+        models = ModelClass(data, args.seed)
+        results = models.run_models()
+        return results
