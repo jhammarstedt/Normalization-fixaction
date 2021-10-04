@@ -23,22 +23,25 @@
                 "capital_gain": "float64", "capital_loss": "float64", "hours_per_week": "float64",
                 "native_country": "category", "income": "category"}
         },
-        
-        "compHardware":
-        {"dataset_name": "compHardware",
-            "dataset_path": "datasets/compHard",
-            "dataset_type": "csv",
+
+        "compHardware":{
+            "dataset_folder": "datasets/compHardware",
+            "dataset_type": "data",
             "pred_type" : "regression",
+            "target": "ERP",
+            "dtype": {"vendo name": "category", "Model Name": "category", "machine cycle time": "float64", "MMIN": "float64",
+              "MMAX": "float64", "CACH": "float64", "CHMIN": "float64", "CHMAX": "float64", "PRP": "float64",
+              "ERP": "float64"}
             "dtype":"TBA",
             "target": "TBA"
 
-            
+
         },
         "breastCancer":
         {"dataset_name": "wdbc",
             "dataset_path": "datasets/breastCancer",
             "dataset_type": "data",
-            "pred_type" : "classification",            
+            "pred_type" : "classification",
             "target": "Diagnosis" ,
 			"dtype":{"ID": "float64", "Diagnosis":"category",
 					 "radius_1":"float64","texture_1":"float64","perimeter_1":"float64","area_1":"float64",
@@ -60,7 +63,5 @@
             "dtype":"TBA",
             "target": "TBA"
         }
-        
-    }
-
+}
 }

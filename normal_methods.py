@@ -99,7 +99,7 @@ def load_data(dataset: str,get_config=False):
         df = pd.read_csv(
             cwd + SEPARATOR + 'datasets' + SEPARATOR + 'compHardware' + SEPARATOR + 'machine.data',
             delimiter=",",
-            header=None,engine='python')
+            engine='python')
         df = df.iloc[:, 2:]
         df = df.sample(frac=1).reset_index(drop=True)
     elif dataset == "breastCancer":
