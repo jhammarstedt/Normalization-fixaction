@@ -1,4 +1,4 @@
-## Training pipeline for KNN, logistic regression and SVM
+# Training pipeline for KNN, logistic regression and SVM
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -23,7 +23,7 @@ from sys import platform
 SEPARATOR = '\\' if platform == 'win32' else '/'
 
 
-class ModelClass():
+class ModelClass:
     def __init__(self, data: dict, seed=0) -> None:
         self.datasets = data
         self.seed = seed
@@ -35,7 +35,7 @@ class ModelClass():
         for dataset_name in self.datasets.keys():
 
             print(f"#############DATASET NAME AND METHOD: {dataset_name} ############")
-            df = self.datasets[dataset_name]["data"].copy() #copy dataframe
+            df = self.datasets[dataset_name]["data"].copy()
 
             categorical = df.select_dtypes('category')
 
@@ -134,12 +134,12 @@ class ModelClass():
 
 
 def read_data(dataset_name):
-    path = os.path.join(os.getcwd(),f"output{SEPARATOR}post_norma_data")
-    files = glob.glob(os.path.join(path,f"{dataset_name}*.csv"))
-    if len(files)==0:
-        return None #no data here
-    
-    #files.append(os.path.join(path,f"{dataset_name}_.csv"))
+    path = os.path.join(os.getcwd(), f"output{SEPARATOR}post_norma_data")
+    files = glob.glob(os.path.join(path, f"{dataset_name}*.csv"))
+    if len(files) == 0:
+        return None  # no data here
+
+    # files.append(os.path.join(path,f"{dataset_name}_.csv"))
 
     config = json.load(open("dataset_config.json"))["datasets"]
     datasets = {}
@@ -149,9 +149,11 @@ def read_data(dataset_name):
 
         dtype = config[dataset_name]["dtype"]
         df = pd.read_csv(f, dtype=dtype)
-        datasets[norm_method] = {"data": df, "target": config[dataset_name]["target"],
-                                 "pred_type": config[dataset_name]["pred_type"],
-                                 "pred_type": config[dataset_name]["pred_type"]}
+        datasets[norm_method] = {
+            "data": df,
+            "target": config[dataset_name]["target"],
+            "pred_type": config[dataset_name]["pred_type"]
+        }
 
     # adding unnormalized data for comparison
     datasets[f"{dataset_name}_UnNorm"] = {"data": load_data(dataset_name), "target": config[dataset_name]["target"],
@@ -159,7 +161,7 @@ def read_data(dataset_name):
     return datasets
 
 
-def run_basic_models(args, dataset) -> str:
+def run_basic_models(args, dataset):
     """Function that runs the model training"""
     data = read_data(dataset)
     if data is None:
@@ -169,6 +171,7 @@ def run_basic_models(args, dataset) -> str:
         models = ModelClass(data, args.seed)
         results = models.run_models()
         return results
+
 # if __name__ == "__main__":
 #     data = read_data()
 #     model = ModelClass(data)
