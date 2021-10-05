@@ -1,13 +1,11 @@
-import os
 import logging
-from sys import platform
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sys import platform
 from sklearn.preprocessing import StandardScaler
-import math
 from sklearn.preprocessing import MinMaxScaler
-import json
+
+from helpers import load_data
 
 try:
     import plotly.express as px
@@ -78,42 +76,6 @@ def variable_scaling(data,config):
 
     data_copy[data_to_normalize.columns] = ((data_to_normalize - mean) * mean) / (std ** 2)
     return data_copy
-
-
-def load_data(dataset: str,get_config=False):
-    cwd = os.getcwd()
-    config = json.load(open("dataset_config.json"))["datasets"]
-    if dataset == "wine":
-        dtypes = config["wine"]["dtype"]
-
-        df = pd.read_csv(rf"datasets{SEPARATOR}wine{SEPARATOR}wine.csv", delimiter=",", dtype=dtypes,engine='python')
-        
-    elif dataset == "adult":
-        column_names = ['age', 'workclass', 'fnlwgt', 'education', 'education_num', 'marital_status', 'occupation',
-                        'relationship',
-                        'race', 'sex', 'capital_gain', 'capital_loss', 'hours_per_week', 'native_country', 'income']
-        dtypes = config["adult"]["dtype"]
-        df = pd.read_csv(cwd + SEPARATOR + 'datasets' + SEPARATOR + 'adult' + SEPARATOR + 'adult.data', delimiter=', ',
-                         names=column_names, dtype=dtypes, index_col=False,engine='python')
-    elif dataset == "compHardware":
-        df = pd.read_csv(
-            cwd + SEPARATOR + 'datasets' + SEPARATOR + 'compHardware' + SEPARATOR + 'machine.data',
-            delimiter=",",
-            engine='python')
-        df = df.iloc[:, 2:]
-        df = df.sample(frac=1).reset_index(drop=True)
-    elif dataset == "breastCancer":
-        dtypes = config["breastCancer"]["dtype"]
-        column_names = ["ID","Diagnosis","radius_1" ,"texture_1" ,"perimeter_1" ,"area_1" ,"smoothness_1" ,"compactness_1" ,"concavity_1" ,"concave_points_1" ,"symmetry_1" ,"fractal_dimension_1" ,"radius_2" ,"texture_2" ,"perimeter_2" ,"area_2" ,"smoothness_2" ,"compactness_2" ,"concavity_2" ,"concave_points_2" ,"symmetry_2" ,"fractal_dimension_2" ,"radius_3" ,"texture_3" ,"perimeter_3" ,"area_3" ,"smoothness_3" ,"compactness_3" ,"concavity_3" ,"concave_points_3" ,"symmetry_3" ,"fractal_dimension_3" ]
-        
-        df = pd.read_csv(rf"datasets{SEPARATOR}breastCancer{SEPARATOR}wdbc.data", delimiter=",",names=column_names, dtype=dtypes,engine='python')
-   
-    else:
-        raise NameError("Not implemented yet")
-    if get_config:
-        return df,config[dataset]
-    else:
-        return df
 
 
 class Normalizator:

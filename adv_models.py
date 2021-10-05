@@ -1,17 +1,7 @@
-from numpy import loadtxt
-from keras.models import Sequential
-from keras.layers import Dense
-import tensorflow as tf
-
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import os
-import glob
-import json
 
 from sys import platform
-from normal_methods import load_data
+from helpers import evaluate_results, read_data
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -21,7 +11,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 SEPARATOR = '\\' if platform == 'win32' else '/'
 
 
-class ModelClass():
+class ModelClass:
     def __init__(self, data: dict, NN_layers=3, NN_size=32, epochs=1, batch_size=10, seed=1) -> None:
         self.datasets = data
         self.layers = NN_layers
@@ -88,6 +78,14 @@ class ModelClass():
         
         """
         print("**********NN************")
+        try:
+            from keras.models import Sequential
+            from keras.layers import Dense
+            import tensorflow as tf
+        except ImportError:
+            print('Keras and TF could not be imported')
+            return None
+
         model = Sequential()
 
         size = self.layer_size
@@ -105,7 +103,7 @@ class ModelClass():
                           metrics=[tf.keras.metrics.MeanSquaredError()])
         model.fit(X_train, y_train, epochs=self.epochs, batch_size=self.batch_size)
 
-        _, accuracy = model.evaluate(X_train, y_train)
+        _, accuracy = evaluate_results(X_train, y_train)
         print('Accuracy: %.2f' % (accuracy * 100))
 
         y_pred = model.predict(X_test)
@@ -119,33 +117,7 @@ class ModelClass():
         return y_pred
 
 
-def read_data(dataset_name):
-    path = os.path.join(os.getcwd(), rf"output{SEPARATOR}post_norma_data")
-    files = glob.glob(os.path.join(path, f"{dataset_name}*.csv"))
-    if len(files) == 0:
-        return None  # no data here
-
-    # files.append(os.path.join(path,f"{dataset_name}_.csv"))
-
-    config = json.load(open("dataset_config.json"))["datasets"]
-    datasets = {}
-    for f in files:
-        norm_method = os.path.basename(f)
-        print(f"Training model for {norm_method.split('_')[1].upper()}")
-
-        dtype = config[dataset_name]["dtype"]
-        df = pd.read_csv(f, dtype=dtype)
-        datasets[norm_method] = {"data": df, "target": config[dataset_name]["target"],
-                                 "pred_type": config[dataset_name]["pred_type"],
-                                 "pred_type": config[dataset_name]["pred_type"]}
-
-    # adding unnormalized data for comparison
-    datasets[f"{dataset_name}_UnNorm"] = {"data": load_data(dataset_name), "target": config[dataset_name]["target"],
-                                          "pred_type": config[dataset_name]["pred_type"]}
-    return datasets
-
-
-def run_advanced_models(args, dataset) -> str:
+def run_advanced_models(args, dataset):
     data = read_data(dataset)
     if data is None:
         return "No data available for dataset"
