@@ -12,13 +12,14 @@ SEPARATOR = '\\' if platform == 'win32' else '/'
 
 
 class ModelClass:
-    def __init__(self, data: dict, NN_layers=3, NN_size=32, epochs=1, batch_size=10, seed=1) -> None:
+    def __init__(self, data: dict, NN_layers=3, NN_size=32, epochs=1, batch_size=10, seed=1,batch_norm=False) -> None:
         self.datasets = data
         self.layers = NN_layers
         self.layer_size = NN_size
         self.epochs = epochs
         self.batch_size = batch_size
         self.seed = seed
+        self.batch_norm = batch_norm
 
     def run_models(self):
         """#!ISAK From this method you can return whatever you want to get to your output """
@@ -82,6 +83,7 @@ class ModelClass:
             from keras.models import Sequential
             from keras.layers import Dense
             import tensorflow as tf
+            from tensorflow.keras.layers import BatchNormalization
         except ImportError:
             print('Keras and TF could not be imported')
             return None
@@ -93,6 +95,8 @@ class ModelClass:
         for i in range(1, self.layers - 1):
             size = int(size / 2)
             model.add(Dense(size, activation='relu'))
+            if self.batch_norm:
+               model.add(BatchNormalization()) #adding some batch norm if we have specified it 
         model.add(Dense(1, activation='sigmoid'))
 
         if pred_type == "classification":
@@ -122,7 +126,7 @@ def run_advanced_models(args, dataset):
     if data is None:
         return "No data available for dataset"
     else:
-        print("Running basic models for dataset {}".format(dataset))
-        models = ModelClass(data, args.seed)
+        print("Running advance models for dataset {}".format(dataset))
+        models = ModelClass(data, seed=args.seed,batch_norm=args.batchnorm)
         results = models.run_models()
         return results
