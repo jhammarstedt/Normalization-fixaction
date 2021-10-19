@@ -7,6 +7,9 @@ from sklearn.metrics import accuracy_score, roc_auc_score
 from sklearn.preprocessing import StandardScaler
 import collections
 import csv
+import plotly.express as px
+import numpy as np
+import pandas as pd
 
 SEPARATOR = '\\' if platform == 'win32' else '/'
 
@@ -30,6 +33,10 @@ def evaluate(files, output_dir):
     '''
     res = collections.defaultdict(
         lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(list))))
+    loss_res = collections.defaultdict(
+        lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(list))))
+
+
     for file in files:
         output = open(file, "rb")
         output = pickle.load(output)
@@ -52,6 +59,33 @@ def evaluate(files, output_dir):
                     res[ds_name][norm_type]['ACC'][model].append([accuracy_score(y_test, y_pred)])
                     res[ds_name][norm_type]['AUC'][model].append([roc_auc_score(y_test, y_pred)])
 
+                if 'train_loss' in output[ds][model].keys():
+                    loss_res[ds_name][model][norm_type]['train_loss'].append(output[ds][model]['train_loss'])
+                    loss_res[ds_name][model][norm_type]['val_loss'].append(output[ds][model]['val_loss'])
+
+    # results for plotting
+    for ds in loss_res:
+        for model in loss_res[ds]:
+
+            df_train_loss = pd.DataFrame()
+            df_val_loss = pd.DataFrame()
+            for norm_type in loss_res[ds][model]:
+                train_loss = np.mean(loss_res[ds][model][norm_type]['train_loss'], axis=0)
+                val_loss = np.mean(loss_res[ds][model][norm_type]['val_loss'], axis=0)
+
+                df_train_loss[model + norm_type] = train_loss
+                df_val_loss[model + norm_type] = val_loss
+
+            fig = px.line(df_train_loss)
+            fig.update_layout(title_text=ds + ' train loss')
+            fig.show()
+
+            fig = px.line(df_val_loss)
+            fig.update_layout(title_text=ds + ' val loss')
+            fig.show()
+
+
+    # results for csv
     for ds in res:
         with open(output_dir + SEPARATOR + ds + '.csv', 'w') as f:
             writer = csv.writer(f)
@@ -59,21 +93,21 @@ def evaluate(files, output_dir):
             # get the header
             header = ['Dataset', 'Norm type', 'Metric'] + [model for model_ in
                                                            list(list(res[ds].values())[0].values())[0] for model in
-                                                           [model_ + '_mean'] + [model_ + '_var']]
+                                                           [model_ + '_mean'] + [model_ + '_std']]
             writer.writerow(header)
-
+            # results for csv
             for norm_type in res[ds]:
                 for metric in res[ds][norm_type]:
                     row = [ds, norm_type, metric]
                     for model in res[ds][norm_type][metric]:
                         scaler = StandardScaler()
                         scaler.fit(res[ds][norm_type][metric][model])
-                        row.extend([scaler.mean_[0], scaler.var_[0]])
+                        row.extend([scaler.mean_[0], scaler.var_[0]**0.5])
 
                     writer.writerow(row)
 
 
-file_names = ["04102021 153511_basic.pkl", "04102021 162329_basic.pkl", "04102021 163002_basic.pkl",
-         "04102021 163455_basic.pkl", "04102021 164031_basic.pkl"]
-file_paths = ["output/results/" + f for f in file_names]
-evaluate(file_paths, "output/results/")
+file_names = ["18102021 142705_advanced.pkl", "18102021 164851_advanced.pkl", "18102021 165846_advanced.pkl",
+              "18102021 170825_advanced.pkl", "18102021 172010_advanced.pkl"]
+file_paths = ["output" + SEPARATOR + "results" + SEPARATOR + "predictions" + SEPARATOR + f for f in file_names]
+evaluate(file_paths, "output/results/final_results")

@@ -14,8 +14,9 @@ import matplotlib.pyplot as plt
 
 SEPARATOR = '\\' if platform == 'win32' else '/'
 
+
 class ModelClass:
-    def __init__(self, data: dict, NN_layers=3, NN_size=32, epochs=1, batch_size=10, seed=1,batch_norm=False) -> None:
+    def __init__(self, data: dict, NN_layers=3, NN_size=32, epochs=5, batch_size=10, seed=1, batch_norm=False) -> None:
         self.datasets = data
         self.layers = NN_layers
         self.layer_size = NN_size
@@ -25,9 +26,9 @@ class ModelClass:
         self.batch_norm = batch_norm
 
     def run_models(self):
-        """#!ISAK From this method you can return whatever you want to get to your output """
-
         results = {}
+        print(self.datasets.keys())
+
         for dataset_name in self.datasets.keys():
             print(f"############# DATASET NAME AND METHOD: {dataset_name} ############")
             df = self.datasets[dataset_name]["data"].copy()  # copy dataframe
@@ -50,14 +51,19 @@ class ModelClass:
             y = df[target]
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=self.seed)
 
-            y_pred = self.train_NN_model(X_train, X_test, y_train, y_test, self.datasets[dataset_name]["pred_type"])
+            y_pred, history = self.train_NN_model(X_train, X_test, y_train, y_test,
+                                                  self.datasets[dataset_name]["pred_type"])
+
+
             results[dataset_name] = {"pred_type": self.datasets[dataset_name]["pred_type"]}
-            results[dataset_name]['NN'] = {'pred': list(y_pred), 'true': list(y_test)}
-            
-            #self.train_AE_model(X_train, X_test, y_train, y_test, self.datasets[dataset_name]["pred_type"])
-            #self.train_VAE_model(X_train, X_test, y_train, y_test, self.datasets[dataset_name]["pred_type"])
-           
-            return results
+            results[dataset_name]['NN'] = {'pred': list(y_pred), 'true': list(y_test),
+                                           'train_loss': history.history['loss'],
+                                           'val_loss': history.history['val_loss']}
+
+            # self.train_AE_model(X_train, X_test, y_train, y_test, self.datasets[dataset_name]["pred_type"])
+            # self.train_VAE_model(X_train, X_test, y_train, y_test, self.datasets[dataset_name]["pred_type"])
+
+        return results
 
     def evaluate(self, y_test, y_pred, type="regression"):
         if type == "regression":
@@ -101,8 +107,8 @@ class ModelClass:
             size = int(size / 2)
             model.add(Dense(size, activation='relu'))
             if self.batch_norm:
-               model.add(BatchNormalization()) #adding some batch norm if we have specified it 
-        #model.add(Dense(1, activation='sigmoid'))  #!for regression we dont want a sigmoid so add relu instead below
+                model.add(BatchNormalization())  # adding some batch norm if we have specified it
+        # model.add(Dense(1, activation='sigmoid'))  #!for regression we dont want a sigmoid so add relu instead below
 
         if pred_type == "classification":
             model.add(Dense(1, activation='sigmoid'))
@@ -112,7 +118,8 @@ class ModelClass:
             model.compile(loss=tf.keras.losses.MeanAbsolutePercentageError(),
                           optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
                           metrics=[tf.keras.metrics.MeanSquaredError()])
-        model.fit(X_train, y_train, epochs=self.epochs, batch_size=self.batch_size)
+        his = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=self.epochs,
+                        batch_size=self.batch_size)
 
         y_pred = model.predict(X_test)
 
@@ -122,9 +129,9 @@ class ModelClass:
         evaluate_results(y_test, y_pred, model_type=pred_type)
         print("************************")
 
-        return y_pred
+        return y_pred, his
 
-    def train_VAE_model(self, X_train, X_test, y_train, y_test, pred_type="classification"):    
+    def train_VAE_model(self, X_train, X_test, y_train, y_test, pred_type="classification"):
         print("********** VAE ************")
         try:
             from keras.models import Sequential
@@ -133,7 +140,7 @@ class ModelClass:
         except ImportError:
             print('Keras and TF could not be imported')
             return None
-        
+
         original_dim = X_train.shape[1]
         intermediate_dim = 8
         latent_dim = 2
@@ -146,7 +153,6 @@ class ModelClass:
         # z = layers.Lambda(self.sampling)([z_mean, z_log_sigma])
 
         z = self.sampling(z_mean, z_log_sigma, latent_dim)
-
 
         # Create encoder
         encoder = keras.Model(inputs, [z_mean, z_log_sigma, z], name='encoder')
@@ -175,7 +181,7 @@ class ModelClass:
                           batch_size=self.batch_size,
                           shuffle=True,
                           validation_data=(X_test, X_test))
-        
+
         plt.plot(history.history['loss'])
         plt.plot(history.history['val_loss'])
         plt.title('model loss')
@@ -183,7 +189,6 @@ class ModelClass:
         plt.xlabel('epoch')
         plt.legend(['train', 'val'], loc='upper left')
         plt.show()
-
 
         # Evaluation is done by loss and plotting the results on 2D map if we have a classification problem
         if pred_type == "classification":
@@ -222,12 +227,12 @@ class ModelClass:
             return None
 
         # Create encoder
-        input = keras.Input(shape=X_train.shape[1],)
+        input = keras.Input(shape=X_train.shape[1], )
         encoded = layers.Dense(32, activation='relu')(input)
         encoded = layers.Dense(8, activation='relu')(encoded)
         encoded = layers.Dense(2, activation='relu')(encoded)
         encoder = keras.Model(input, encoded, name='encoder')
-        
+
         # latent_input = keras.Input(shape=(2,), name='latent_input')
 
         # Create decoder
@@ -235,7 +240,6 @@ class ModelClass:
         decoded = layers.Dense(32, activation='relu')(decoded)
         decoded = layers.Dense(X_train.shape[1], activation='sigmoid')(decoded)
         # decoder = keras.Model(latent_input, decoded, name='decoder')
-
 
         # output = decoder(encoder(input)[2])
 
@@ -248,7 +252,7 @@ class ModelClass:
                                   batch_size=self.batch_size,
                                   shuffle=True,
                                   validation_data=(X_test, X_test))
-        
+
         plt.plot(history.history['loss'])
         plt.plot(history.history['val_loss'])
         plt.title('model loss')
@@ -267,7 +271,6 @@ class ModelClass:
             plt.colorbar()
             plt.show()
 
-
         print("************************")
 
         return []
@@ -279,6 +282,6 @@ def run_advanced_models(args, dataset):
         return "No data available for dataset"
     else:
         print("Running advance models for dataset {}".format(dataset))
-        models = ModelClass(data, seed=args.seed,batch_norm=args.batchnorm)
+        models = ModelClass(data, seed=args.seed, batch_norm=args.batchnorm)
         results = models.run_models()
         return results
