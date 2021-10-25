@@ -15,28 +15,30 @@ except ImportError:
 
 SEPARATOR = '\\' if platform == 'win32' else '/'
 
-def without_label(data,config):
+
+def without_label(data, config):
     """Removing label and categorical values"""
     data_without_cat = data.select_dtypes(exclude='category')
     target = config["target"]
-    X = data_without_cat.loc[:,data_without_cat.columns!=target] #removing label
+    X = data_without_cat.loc[:, data_without_cat.columns != target]  # removing label
     return X
 
 
-def z_score(data,config):
+def z_score(data, config):
     data_copy = data.copy()
-    data_to_normalize = without_label(data_copy,config)
+    data_to_normalize = without_label(data_copy, config)
     scaler = StandardScaler()
     data_copy[data_to_normalize.columns] = scaler.fit_transform(data_to_normalize)
 
     return data_copy
 
-def tanh_norm(data,config):
+
+def tanh_norm(data, config):
     # Reduce influence of the values in the tail of the distribution
     # x = 0.5 * (tanh((0.01(x - mu)) / std) + 1)
 
     data_copy = data.copy()
-    data_to_normalize = without_label(data_copy,config)
+    data_to_normalize = without_label(data_copy, config)
 
     m = np.mean(data_to_normalize, axis=0)
     std = np.std(data_to_normalize, axis=0)
@@ -45,18 +47,18 @@ def tanh_norm(data,config):
     return data_copy
 
 
-def min_max(data,config):
+def min_max(data, config):
     data_copy = data.copy()
-    data_to_normalize = without_label(data_copy,config)
+    data_to_normalize = without_label(data_copy, config)
 
     scaler = MinMaxScaler()
     data_copy[data_to_normalize.columns] = scaler.fit_transform(data_to_normalize)
     return data_copy
 
 
-def pareto_scaling(data,config):
+def pareto_scaling(data, config):
     data_copy = data.copy()
-    data_to_normalize = without_label(data_copy,config)
+    data_to_normalize = without_label(data_copy, config)
 
     mean = np.mean(data_to_normalize, axis=0)
     std = np.std(data_to_normalize, axis=0)
@@ -65,11 +67,11 @@ def pareto_scaling(data,config):
     return data_copy
 
 
-def variable_scaling(data,config):
+def variable_scaling(data, config):
     # extends the z-score normalization by introducing the Co- efficient of Variation (CV) as a scaling factor.
     # The coefficient of variation is given as the ratio of the mean of data to its standard deviation
     data_copy = data.copy()
-    data_to_normalize = without_label(data_copy,config)
+    data_to_normalize = without_label(data_copy, config)
 
     mean = np.mean(data_to_normalize, axis=0)
     std = np.std(data_to_normalize, axis=0)
@@ -91,7 +93,7 @@ class Normalizator:
         """
 
         self.dataset = dataset
-        self.df,self.config = load_data(self.dataset,get_config=True)
+        self.df, self.config = load_data(self.dataset, get_config=True)
         self.df_norm = None
 
     def normalize(self, method="zscore", reset=False, save=False):
@@ -103,16 +105,17 @@ class Normalizator:
             # Load the data again
             self.df = load_data(self.dataset)
         if method == "zscore":
-            self.df_norm = z_score(self.df,self.config)
+            self.df_norm = z_score(self.df, self.config)
         elif method == "tanh":
-            self.df_norm = tanh_norm(self.df,self.config)
+            self.df_norm = tanh_norm(self.df, self.config)
         elif method == "pareto":
-            self.df_norm = pareto_scaling(self.df,self.config)
+            self.df_norm = pareto_scaling(self.df, self.config)
         elif method == 'minmax':
-            self.df_norm = min_max(self.df,self.config)
+            self.df_norm = min_max(self.df, self.config)
         elif method == 'variablescaling':
-            self.df_norm = variable_scaling(self.df,self.config)
+            self.df_norm = variable_scaling(self.df, self.config)
         else:
+            print(method)
             raise NotImplementedError("This normalization is not implemented yet")
 
         if save:
@@ -135,7 +138,6 @@ class Normalizator:
         self.df[col] = le.transform(self.df[col])
         return self.df
 
-
 # if __name__ == "__main__":
 #     n = Normalizator("adult")
 #     n.normalize(method="minmax", save=True)
@@ -143,4 +145,4 @@ class Normalizator:
 #     print(n.df_norm.describe())
 #     # n.visuals()
 
-    # n.run_model(model="knn")
+# n.run_model(model="knn")

@@ -16,6 +16,9 @@ parser.add_argument("-a", "--all", default="all_data", help="Run with all datase
 parser.add_argument('-d', '--dataset', default='adult', help='Dataset to use')
 parser.add_argument('-m', '--method', default='zscore', help='Normalization method to use')
 parser.add_argument('-s', '--seed', default=1, type=int, help='Seed')
+parser.add_argument('-mm', '--model', default="all", help="Select all, basic or adv")
+parser.add_argument('-bn', '--batchnorm', default=False, type=bool,
+                    help="Add batch normalization to each layer in the adv models")
 args = parser.parse_args()
 SEPARATOR = '\\' if platform == 'win32' else '/'
 
@@ -49,21 +52,39 @@ def main():
     if args.dataset == "all":
         output_basic = {}
         output_advanced = {}
-        for dataset in datasets:
-            normalize(dataset, verbose=True)
-            output_dataset_basic = run_basic_models(args, dataset)
-            print(output_dataset_basic)
-            output_basic = {**output_basic, **output_dataset_basic}
 
-            output_dataset_advanced = run_advanced_models(args, dataset)
-            print('--------')
-            print(output_dataset_advanced)
-            output_advanced = {**output_advanced, **output_dataset_advanced}
+        for dataset in datasets:
+            normalize(dataset, verbose=False)
+            if args.model in ["all", "basic"]:
+                print('----BASIC models----')
+                output_dataset_basic = run_basic_models(args, dataset)
+                output_basic = {**output_basic, **output_dataset_basic}
+
+            if args.model in ["all", "adv"]:
+                print('----ADV models----')
+                output_dataset_advanced = run_advanced_models(args, dataset)
+                output_advanced = {**output_advanced, **output_dataset_advanced}
 
     else:  # run for a single one
+        print("SINGLE DATA")
         if not args.dataset in datasets:
             print("Dataset not found")
             sys.exit(1)
+
+        output_basic = {}
+        output_advanced = {}
+        dataset = args.dataset
+        normalize(dataset, verbose=False)
+        output_dataset_basic = run_basic_models(args, dataset)
+        print(output_dataset_basic)
+
+        output_basic = {**output_basic, **output_dataset_basic}
+
+        output_dataset_advanced = run_advanced_models(args, dataset)
+        print('--------')
+        print(output_dataset_advanced)
+        output_advanced = {**output_advanced, **output_dataset_advanced}
+
         # ! NORMALIZATION - MAT
         # * Write the input and output of your normalization method here
         # * Output results in output/post_norma_data with proper names (e.g wine_zscore.csv)
@@ -73,16 +94,16 @@ def main():
         # * Reads normalized data from output/post_norma_data in the specified format and runs classifiers
         # * Reads the unnormalized data from datasets
 
-        output_basic = run_basic_models(args)  # TODO: ISAK CHANGE THIS TO THE OUTPUT YOU WANT TO DISPLAY
-        output_advanced = run_advanced_models(args)  # TODO ISAK CHANGE THIS TO THE OUTPUT YOU WANT TO DISPLAY
+        output_basic = run_basic_models(args, dataset)
+        output_advanced = run_advanced_models(args, dataset)
 
-    # print(output)
+    if args.model in ["all", "basic"]:
+        with open('output' + SEPARATOR + 'results' + SEPARATOR + "predictions" + SEPARATOR + start_time + "_basic" + '.pkl', 'wb') as fp:
+            pickle.dump(output_basic, fp)
 
-    with open('output' + SEPARATOR + 'results' + SEPARATOR + start_time + "_basic" + '.pkl', 'wb') as fp:
-        pickle.dump(output_basic, fp)
-
-    with open('output' + SEPARATOR + 'results' + SEPARATOR + start_time + "_advanced" + '.pkl', 'wb') as fp:
-        pickle.dump(output_advanced, fp)
+    if args.model in ["all", "adv"]:
+        with open('output' + SEPARATOR + 'results' + SEPARATOR + "predictions" + SEPARATOR + start_time + "_advanced" + '.pkl', 'wb') as fp:
+            pickle.dump(output_advanced, fp)
 
     # ! EVALUATION - ISAK
     # Write the input you want to evaluate here and the output you will produce
