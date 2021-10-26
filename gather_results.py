@@ -47,6 +47,7 @@ def evaluate(files, output_dir):
             for model in output[ds]:
                 if model == 'pred_type':
                     continue
+
                 y_test, y_pred = output[ds][model]['true'], output[ds][model]['pred']
 
                 ds_name, norm_type = ds.split('_')
@@ -60,21 +61,41 @@ def evaluate(files, output_dir):
                     res[ds_name][norm_type]['AUC'][model].append([roc_auc_score(y_test, y_pred)])
 
                 if 'train_loss' in output[ds][model].keys():
+                    loss_res[ds_name]['pred_type'] = type
                     loss_res[ds_name][model][norm_type]['train_loss'].append(output[ds][model]['train_loss'])
                     loss_res[ds_name][model][norm_type]['val_loss'].append(output[ds][model]['val_loss'])
+                    if type == 'classification':
+                        loss_res[ds_name][model][norm_type]['train_acc'].append(output[ds][model]['train_acc'])
+                        loss_res[ds_name][model][norm_type]['val_acc'].append(output[ds][model]['val_acc'])
 
     # results for plotting
     for ds in loss_res:
+
+        pred_type = loss_res[ds]['pred_type']
+
         for model in loss_res[ds]:
+            if model == 'pred_type':
+                continue
 
             df_train_loss = pd.DataFrame()
             df_val_loss = pd.DataFrame()
+
+            df_train_acc = pd.DataFrame()
+            df_val_acc = pd.DataFrame()
+
             for norm_type in loss_res[ds][model]:
                 train_loss = np.mean(loss_res[ds][model][norm_type]['train_loss'], axis=0)
                 val_loss = np.mean(loss_res[ds][model][norm_type]['val_loss'], axis=0)
 
                 df_train_loss[model + norm_type] = train_loss
                 df_val_loss[model + norm_type] = val_loss
+
+                if pred_type == 'classification':
+                    train_acc = np.mean(loss_res[ds][model][norm_type]['train_acc'], axis=0)
+                    val_acc = np.mean(loss_res[ds][model][norm_type]['val_acc'], axis=0)
+
+                    df_train_acc[model + norm_type] = train_acc
+                    df_val_acc[model + norm_type] = val_acc
 
             fig = px.line(df_train_loss)
             fig.update_layout(title_text=ds + ' train loss')
@@ -83,6 +104,15 @@ def evaluate(files, output_dir):
             fig = px.line(df_val_loss)
             fig.update_layout(title_text=ds + ' val loss')
             fig.show()
+
+            if pred_type == 'classification':
+                fig = px.line(df_train_acc)
+                fig.update_layout(title_text=ds + ' train acc')
+                fig.show()
+
+                fig = px.line(df_val_acc)
+                fig.update_layout(title_text=ds + ' val acc')
+                fig.show()
 
 
     # results for csv
@@ -107,7 +137,6 @@ def evaluate(files, output_dir):
                     writer.writerow(row)
 
 
-file_names = ["18102021 142705_advanced.pkl", "18102021 164851_advanced.pkl", "18102021 165846_advanced.pkl",
-              "18102021 170825_advanced.pkl", "18102021 172010_advanced.pkl"]
+file_names = ["26102021 174253_advanced.pkl"]
 file_paths = ["output" + SEPARATOR + "results" + SEPARATOR + "predictions" + SEPARATOR + f for f in file_names]
 evaluate(file_paths, "output/results/final_results")

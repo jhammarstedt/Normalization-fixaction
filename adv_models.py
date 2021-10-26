@@ -16,7 +16,7 @@ SEPARATOR = '\\' if platform == 'win32' else '/'
 
 
 class ModelClass:
-    def __init__(self, data: dict, NN_layers=3, NN_size=32, epochs=5, batch_size=10, seed=1, batch_norm=False) -> None:
+    def __init__(self, data: dict, NN_layers=2, NN_size=32, epochs=2, batch_size=10, seed=1, batch_norm=False) -> None:
         self.datasets = data
         self.layers = NN_layers
         self.layer_size = NN_size
@@ -59,6 +59,10 @@ class ModelClass:
             results[dataset_name]['NN'] = {'pred': list(y_pred), 'true': list(y_test),
                                            'train_loss': history.history['loss'],
                                            'val_loss': history.history['val_loss']}
+
+            if self.datasets[dataset_name]["pred_type"] == "classification":
+                results[dataset_name]['NN']['train_acc'] = history.history['accuracy']
+                results[dataset_name]['NN']['val_acc'] = history.history['val_accuracy']
 
             # self.train_AE_model(X_train, X_test, y_train, y_test, self.datasets[dataset_name]["pred_type"])
             # self.train_VAE_model(X_train, X_test, y_train, y_test, self.datasets[dataset_name]["pred_type"])
