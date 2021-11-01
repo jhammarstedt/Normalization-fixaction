@@ -16,7 +16,7 @@ SEPARATOR = '\\' if platform == 'win32' else '/'
 
 
 class ModelClass:
-    def __init__(self, data: dict, NN_layers=2, NN_size=32, epochs=2, batch_size=10, seed=1, batch_norm=False) -> None:
+    def __init__(self, data: dict, NN_layers=8, NN_size=64, epochs=20, batch_size=64, seed=1, batch_norm=False) -> None:
         self.datasets = data
         self.layers = NN_layers
         self.layer_size = NN_size
@@ -219,7 +219,6 @@ class ModelClass:
     def train_AE_model(self, X_train, X_test, y_train, y_test, pred_type="classification"):
         """
         Here we train the models and get access to data for evaluation
-        
         """
         print("********** AE ************")
         try:

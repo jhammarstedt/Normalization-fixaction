@@ -10,6 +10,7 @@ from normal_methods import Normalizator
 from basic_models import run_basic_models
 from datetime import datetime
 from sys import platform
+import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a", "--all", default="all_data", help="Run with all datasets")
@@ -19,6 +20,13 @@ parser.add_argument('-s', '--seed', default=1, type=int, help='Seed')
 parser.add_argument('-mm', '--model', default="all", help="Select all, basic or adv")
 parser.add_argument('-bn', '--batchnorm', default=False, type=bool,
                     help="Add batch normalization to each layer in the adv models")
+parser.add_argument('-nns', '--nn_size', default=64, type=bool,
+                    help="size of each nn layer")
+parser.add_argument('-nnl', '--layers', default=8, type=bool,
+                    help="amount of layers")
+
+parser.add_argument('-nne', '--nn_epochs', default=20, type=int,help="Number of epochs for the NN")
+
 args = parser.parse_args()
 SEPARATOR = '\\' if platform == 'win32' else '/'
 
@@ -54,6 +62,10 @@ def main():
         output_advanced = {}
 
         for dataset in datasets:
+            print("Running dataset: {}".format(dataset))
+            if "compHardware" in dataset:
+                print("skipping comp hardware")
+                continue
             normalize(dataset, verbose=False)
             if args.model in ["all", "basic"]:
                 print('----BASIC models----')
@@ -97,12 +109,23 @@ def main():
         output_basic = run_basic_models(args, dataset)
         output_advanced = run_advanced_models(args, dataset)
 
+
+
+    
+    #! FIX FILE PATH
     if args.model in ["all", "basic"]:
         with open('output' + SEPARATOR + 'results' + SEPARATOR + "predictions" + SEPARATOR + start_time + "_basic" + '.pkl', 'wb') as fp:
             pickle.dump(output_basic, fp)
 
-    if args.model in ["all", "adv"]:
-        with open('output' + SEPARATOR + 'results' + SEPARATOR + "predictions" + SEPARATOR + start_time + "_advanced" + '.pkl', 'wb') as fp:
+    if args.model in ["all", "adv"]:        
+        name = f"_adv({args.nne},{args.nnl},{args.nns},"
+        if args.batchnorm:
+            name+="BN"
+        
+        
+        name+=")"
+
+        with open('output' + SEPARATOR + 'results' + SEPARATOR + "predictions" + SEPARATOR + name +time.time() + '.pkl', 'wb') as fp:
             pickle.dump(output_advanced, fp)
 
     # ! EVALUATION - ISAK
