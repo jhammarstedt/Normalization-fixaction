@@ -285,6 +285,6 @@ def run_advanced_models(args, dataset):
         return "No data available for dataset"
     else:
         print("Running advance models for dataset {}".format(dataset))
-        models = ModelClass(data, seed=args.seed, batch_norm=args.batchnorm)
+        models = ModelClass(data,NN_layers=args.nnl,NN_size=args.nns,epochs=args.nne, seed=args.seed, batch_norm=args.batchnorm)
         results = models.run_models()
         return results
