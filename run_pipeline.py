@@ -22,7 +22,7 @@ parser.add_argument('-bn', '--batchnorm', default=False, type=bool,
                     help="Add batch normalization to each layer in the adv models")
 parser.add_argument('-nns', '--nn_size', default=64, type=bool,
                     help="size of each nn layer")
-parser.add_argument('-nnl', '--layers', default=8, type=bool,
+parser.add_argument('-nnl', '--layers', default=4, type=bool,
                     help="amount of layers")
 
 parser.add_argument('-nne', '--nn_epochs', default=20, type=int,help="Number of epochs for the NN")
@@ -118,14 +118,14 @@ def main():
             pickle.dump(output_basic, fp)
 
     if args.model in ["all", "adv"]:        
-        name = f"_adv({args.nne},{args.nnl},{args.nns},"
+        name = f"_adv({args.nn_epochs},{args.layers},{args.nn_size},"
         if args.batchnorm:
             name+="BN"
         
         
         name+=")"
 
-        with open('output' + SEPARATOR + 'results' + SEPARATOR + "predictions" + SEPARATOR + name +time.time() + '.pkl', 'wb') as fp:
+        with open('output' + SEPARATOR + 'results' + SEPARATOR + "predictions" + SEPARATOR + name + str(time.time()) + '.pkl', 'wb') as fp:
             pickle.dump(output_advanced, fp)
 
     # ! EVALUATION - ISAK

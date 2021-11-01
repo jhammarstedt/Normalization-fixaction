@@ -16,7 +16,7 @@ SEPARATOR = '\\' if platform == 'win32' else '/'
 
 
 class ModelClass:
-    def __init__(self, data: dict, NN_layers=8, NN_size=64, epochs=20, batch_size=64, seed=1, batch_norm=False) -> None:
+    def __init__(self, data: dict, NN_layers=4, NN_size=64, epochs=20, batch_size=64, seed=1, batch_norm=False) -> None:
         self.datasets = data
         self.layers = NN_layers
         self.layer_size = NN_size
@@ -118,8 +118,8 @@ class ModelClass:
             model.add(Dense(1, activation='sigmoid'))
             model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
         else:
-            model.add(Dense(1, activation='relu'))
-            model.compile(loss=tf.keras.losses.MeanAbsolutePercentageError(),
+            model.add(Dense(1, activation=None))
+            model.compile(loss=tf.keras.losses.MeanSquaredError(),
                           optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
                           metrics=[tf.keras.metrics.MeanSquaredError()])
         his = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=self.epochs,
@@ -285,6 +285,7 @@ def run_advanced_models(args, dataset):
         return "No data available for dataset"
     else:
         print("Running advance models for dataset {}".format(dataset))
-        models = ModelClass(data,NN_layers=args.nnl,NN_size=args.nns,epochs=args.nne, seed=args.seed, batch_norm=args.batchnorm)
+        print(args)
+        models = ModelClass(data,NN_layers=args.layers,NN_size=args.nn_size,epochs=args.nn_epochs, seed=args.seed, batch_norm=args.batchnorm)
         results = models.run_models()
         return results
