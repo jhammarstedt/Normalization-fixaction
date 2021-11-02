@@ -10,6 +10,8 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from keras import backend as K
 import keras
 from keras import layers
+#import dropout from keras
+from keras.layers import Dropout
 import matplotlib.pyplot as plt
 
 SEPARATOR = '\\' if platform == 'win32' else '/'
@@ -110,6 +112,7 @@ class ModelClass:
         for i in range(1, self.layers - 1):
             size = int(size / 2)
             model.add(Dense(size, activation='relu'))
+            model.add(Dropout(0.2))
             if self.batch_norm:
                 model.add(BatchNormalization())  # adding some batch norm if we have specified it
         # model.add(Dense(1, activation='sigmoid'))  #!for regression we dont want a sigmoid so add relu instead below
