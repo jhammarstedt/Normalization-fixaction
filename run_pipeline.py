@@ -20,9 +20,9 @@ parser.add_argument('-s', '--seed', default=1, type=int, help='Seed')
 parser.add_argument('-mm', '--model', default="all", help="Select all, basic or adv")
 parser.add_argument('-bn', '--batchnorm', default=False, type=bool,
                     help="Add batch normalization to each layer in the adv models")
-parser.add_argument('-nns', '--nn_size', default=64, type=bool,
+parser.add_argument('-nns', '--nn_size', default=64, type=int,
                     help="size of each nn layer")
-parser.add_argument('-nnl', '--layers', default=8, type=bool,
+parser.add_argument('-nnl', '--layers', default=8, type=int,
                     help="amount of layers")
 
 parser.add_argument('-nne', '--nn_epochs', default=20, type=int,help="Number of epochs for the NN")
@@ -119,6 +119,7 @@ def main():
 
     if args.model in ["all", "adv"]:        
         name = f"_adv({args.nne},{args.nnl},{args.nns},"
+        
         if args.batchnorm:
             name+="BN"
         
