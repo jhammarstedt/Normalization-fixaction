@@ -83,10 +83,11 @@ def update_tables(adv=True):
 
         # make all floats two decimals
         dfs = [df.round(2) for df in dfs]
+        
         frame = [
             dbc.Col(children=[
                 # poping the title for tables
-                html.H3(f"{results.pop().partition('_')[0]}"),
+                html.H3(f"{results.pop(0).partition('_')[0]}"), #getting the header
                 dash_table.DataTable(
                     id='table',
                     columns=[{"name": i, "id": i} for i in df.columns],
@@ -214,12 +215,13 @@ def evaluate(files, output_dir):
         lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(list))))
     loss_res = collections.defaultdict(
         lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(list))))
-
+    print("CURRENT FILE",files)
     for file in files:
         output = open(file, "rb")
         output = pickle.load(output)
-
+        
         for ds in output:
+            
             type = output[ds]['pred_type']
 
             for model in output[ds]:
@@ -231,6 +233,7 @@ def evaluate(files, output_dir):
                 ds_name, norm_type = ds.split('_')
                 norm_type = norm_type[:-4]
                 if type == "regression":
+                    
                     res[ds_name][norm_type]['MAE'][model].append(
                         [mean_absolute_error(y_test, y_pred)])
                     res[ds_name][norm_type]['MSE'][model].append(
@@ -256,7 +259,7 @@ def evaluate(files, output_dir):
                             output[ds][model]['val_acc'])
 
 
-
+    
     # results for csv
     for ds in res:
         with open(output_dir + SEPARATOR + ds +"_adv"+'.csv', 'w') as f: #write to csv
@@ -298,6 +301,7 @@ def make_layout(file_names: list(), all_names: list()):
                 html.H1('Results Dashboard'),
         dbc.Row([dbc.Container(id="Advanced model wrapper", children=[
             # dbc.Row(id = "loss title",children=html.H1('Loss plots')),
+            html.H2("Advanced Models"),
             dbc.Row(id="instruction wrapper", children=[html.P(
                 "Select file with configurations: (Epochs,Layers,Batch Size, BN = Batch Norm)")]),
             dcc.Dropdown(
@@ -312,8 +316,9 @@ def make_layout(file_names: list(), all_names: list()):
                 dbc.Row(id="Adv Tables")
             ]),
             dbc.Row(id="Adv results")
-
         ]),
+        dbc.Row([dbc.Container(id="Simple model wrapper", children=[html.H2("Basic Models")]),
+        ])
     ])
     return layout
 
@@ -346,10 +351,9 @@ def update_line_chart(file_name, all_names, prevent_initial_call=False):
 
 
 if __name__ == '__main__':
-    # file_names = ['27102021 102533_advanced.pkl',
-    #               '27102021 102849_advanced.pkl',
-    #               '27102021 103218_advanced.pkl']
+   
     all_names = os.listdir(f"output{SEPARATOR}results{SEPARATOR}predictions")
+    
     # getting everything until the timestamp
     grouped_names = list(set([i.partition(")")[0] for i in all_names]))
 
