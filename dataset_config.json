@@ -46,6 +46,7 @@
       }
     },
     "compHardware": {
+      "dataset_name": "machine.data",
       "dataset_folder": "datasets/compHardware",
       "dataset_type": "data",
       "pred_type": "regression",
@@ -70,7 +71,6 @@
       "pred_type": "classification",
       "target": "Diagnosis",
       "dtype": {
-        "ID": "float64",
         "Diagnosis": "category",
         "radius_1": "float64",
         "texture_1": "float64",

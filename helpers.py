@@ -47,15 +47,17 @@ def load_data(dataset: str, get_config=False):
         df = pd.read_csv(cwd + SEPARATOR + 'datasets' + SEPARATOR + 'adult' + SEPARATOR + 'adult.data', delimiter=', ',
                          names=column_names, dtype=dtypes, index_col=False, engine='python')
     elif dataset == "compHardware":
+        dtypes = config["compHardware"]["dtype"]
+
         df = pd.read_csv(
             cwd + SEPARATOR + 'datasets' + SEPARATOR + 'compHardware' + SEPARATOR + 'machine.data',
-            delimiter=",",
-            engine='python')
-        df = df.iloc[:, 2:]
-        df = df.sample(frac=1).reset_index(drop=True)
+            delimiter=",", dtype=dtypes, index_col=False, engine='python')
+        #df = df.iloc[:, 2:]
+        #df = df.sample(frac=1).reset_index(drop=True)
+
     elif dataset == "breastCancer":
         dtypes = config["breastCancer"]["dtype"]
-        column_names = ["ID", "Diagnosis", "radius_1", "texture_1", "perimeter_1", "area_1", "smoothness_1",
+        column_names = ["Diagnosis", "radius_1", "texture_1", "perimeter_1", "area_1", "smoothness_1",
                         "compactness_1", "concavity_1", "concave_points_1", "symmetry_1", "fractal_dimension_1",
                         "radius_2", "texture_2", "perimeter_2", "area_2", "smoothness_2", "compactness_2",
                         "concavity_2", "concave_points_2", "symmetry_2", "fractal_dimension_2", "radius_3", "texture_3",
