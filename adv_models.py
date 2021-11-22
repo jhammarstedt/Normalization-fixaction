@@ -10,7 +10,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from keras import backend as K
 import keras
 from keras import layers
-#import dropout from keras
+# import dropout from keras
 from keras.layers import Dropout
 import matplotlib.pyplot as plt
 
@@ -55,7 +55,6 @@ class ModelClass:
 
             y_pred, history = self.train_NN_model(X_train, X_test, y_train, y_test,
                                                   self.datasets[dataset_name]["pred_type"])
-
 
             results[dataset_name] = {"pred_type": self.datasets[dataset_name]["pred_type"]}
             results[dataset_name]['NN'] = {'pred': list(y_pred), 'true': list(y_test),
@@ -125,6 +124,8 @@ class ModelClass:
             model.compile(loss=tf.keras.losses.MeanSquaredError(),
                           optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
                           metrics=[tf.keras.metrics.MeanSquaredError()])
+
+        model.summary()
         his = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=self.epochs,
                         batch_size=self.batch_size)
 
@@ -289,6 +290,7 @@ def run_advanced_models(args, dataset):
     else:
         print("Running advance models for dataset {}".format(dataset))
 
-        models = ModelClass(data,NN_layers=args.layers,NN_size=args.nn_size,epochs=args.nn_epochs, seed=args.seed, batch_norm=args.batchnorm)
+        models = ModelClass(data, NN_layers=args.layers, NN_size=args.nn_size, epochs=args.nn_epochs, seed=args.seed,
+                            batch_norm=args.batchnorm)
         results = models.run_models()
         return results

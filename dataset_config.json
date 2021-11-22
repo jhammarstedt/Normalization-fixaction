@@ -1,55 +1,153 @@
 {
-    "datasets":{
-        "wine":{
-            "dataset_folder": "datasets/wine",
-            "dataset_type": "csv",
-            "pred_type" : "regression",
-            "target": "quality",
-            "dtype": {"fixed acidity": "float64", "volatile acidity": "float64", "citric acid": "float64",
-                "residual sugar": "float64", "chlorides": "float64", "free sulfur dioxide": "float64",
-                 "total sulfur dioxide": "float64", "density": "float64", "pH": "float64", "sulphates": "float64",
-                  "alcohol": "float64", "quality": "float64","color": "category"}
-        },
-        "adult":{
-        "dataset_name": "adult",
-            "dataset_folder": "datasets/adult",
-            "dataset_type": "data",
-            "pred_type" : "classification",
-            "target": "income",
-            "dtype": {"age": "float64", "workclass": "category", "fnlwgt": "float64", "education": "category",
-                "education_num": "float64",
-                "marital_status": "category", "occupation": "category", "relationship": "category",
-                "race": "category", "sex": "category",
-                "capital_gain": "float64", "capital_loss": "float64", "hours_per_week": "float64",
-                "native_country": "category", "income": "category"}
-        },
-
-        "compHardware":{
-            "dataset_folder": "datasets/compHardware",
-            "dataset_type": "data",
-            "pred_type" : "regression",
-            "target": "ERP",
-            "dtype": {"vendo name": "category", "Model Name": "category", "machine cycle time": "float64", "MMIN": "float64",
-              "MMAX": "float64", "CACH": "float64", "CHMIN": "float64", "CHMAX": "float64", "PRP": "float64",
-              "ERP": "float64"}
-        },
-        "breastCancer":
-        {"dataset_name": "wdbc",
-            "dataset_path": "datasets/breastCancer",
-            "dataset_type": "data",
-            "pred_type" : "classification",
-            "target": "Diagnosis" ,
-			"dtype":{"ID": "float64", "Diagnosis":"category",
-					 "radius_1":"float64","texture_1":"float64","perimeter_1":"float64","area_1":"float64",
-					 "smoothness_1":"float64","compactness_1":"float64","concavity_1":"float64",
-					 "concave_points_1":"float64","symmetry_1":"float64","fractal_dimension_1":"float64",
-					 "radius_2":"float64","texture_2":"float64","perimeter_2":"float64","area_2":"float64",
-					 "smoothness_2":"float64","compactness_2":"float64","concavity_2":"float64",
-					 "concave_points_2":"float64","symmetry_2":"float64","fractal_dimension_2":"float64",
-					 "radius_3":"float64","texture_3":"float64","perimeter_3":"float64","area_3":"float64",
-					 "smoothness_3":"float64","compactness_3":"float64","concavity_3":"float64",
-					 "concave_points_3":"float64","symmetry_3":"float64","fractal_dimension_3":"float64"}
-
-        }
-}
+  "datasets": {
+    "wine": {
+      "dataset_folder": "datasets/wine",
+      "dataset_type": "csv",
+      "pred_type": "regression",
+      "target": "quality",
+      "dtype": {
+        "fixed acidity": "float64",
+        "volatile acidity": "float64",
+        "citric acid": "float64",
+        "residual sugar": "float64",
+        "chlorides": "float64",
+        "free sulfur dioxide": "float64",
+        "total sulfur dioxide": "float64",
+        "density": "float64",
+        "pH": "float64",
+        "sulphates": "float64",
+        "alcohol": "float64",
+        "quality": "float64",
+        "color": "category"
+      }
+    },
+    "adult": {
+      "dataset_name": "adult",
+      "dataset_folder": "datasets/adult",
+      "dataset_type": "data",
+      "pred_type": "classification",
+      "target": "income",
+      "dtype": {
+        "age": "float64",
+        "workclass": "category",
+        "fnlwgt": "float64",
+        "education": "category",
+        "education_num": "float64",
+        "marital_status": "category",
+        "occupation": "category",
+        "relationship": "category",
+        "race": "category",
+        "sex": "category",
+        "capital_gain": "float64",
+        "capital_loss": "float64",
+        "hours_per_week": "float64",
+        "native_country": "category",
+        "income": "category"
+      }
+    },
+    "compHardware": {
+      "dataset_folder": "datasets/compHardware",
+      "dataset_type": "data",
+      "pred_type": "regression",
+      "target": "ERP",
+      "dtype": {
+        "vendo name": "category",
+        "Model Name": "category",
+        "machine cycle time": "float64",
+        "MMIN": "float64",
+        "MMAX": "float64",
+        "CACH": "float64",
+        "CHMIN": "float64",
+        "CHMAX": "float64",
+        "PRP": "float64",
+        "ERP": "float64"
+      }
+    },
+    "breastCancer": {
+      "dataset_name": "wdbc",
+      "dataset_path": "datasets/breastCancer",
+      "dataset_type": "data",
+      "pred_type": "classification",
+      "target": "Diagnosis",
+      "dtype": {
+        "ID": "float64",
+        "Diagnosis": "category",
+        "radius_1": "float64",
+        "texture_1": "float64",
+        "perimeter_1": "float64",
+        "area_1": "float64",
+        "smoothness_1": "float64",
+        "compactness_1": "float64",
+        "concavity_1": "float64",
+        "concave_points_1": "float64",
+        "symmetry_1": "float64",
+        "fractal_dimension_1": "float64",
+        "radius_2": "float64",
+        "texture_2": "float64",
+        "perimeter_2": "float64",
+        "area_2": "float64",
+        "smoothness_2": "float64",
+        "compactness_2": "float64",
+        "concavity_2": "float64",
+        "concave_points_2": "float64",
+        "symmetry_2": "float64",
+        "fractal_dimension_2": "float64",
+        "radius_3": "float64",
+        "texture_3": "float64",
+        "perimeter_3": "float64",
+        "area_3": "float64",
+        "smoothness_3": "float64",
+        "compactness_3": "float64",
+        "concavity_3": "float64",
+        "concave_points_3": "float64",
+        "symmetry_3": "float64",
+        "fractal_dimension_3": "float64"
+      }
+    },
+    "tempForecast": {
+      "dataset_name": "tempForecast",
+      "dataset_path": "datasets/tempForecast",
+      "dataset_type": "data",
+      "pred_type": "regression",
+      "target": "Next_Tmax",
+      "dtype": {
+        "Present_Tmax": "float64",
+        "Present_Tmin": "float64",
+        "LDAPS_RHmin": "float64",
+        "LDAPS_RHmax": "float64",
+        "LDAPS_Tmax_lapse": "float64",
+        "LDAPS_Tmin_lapse": "float64",
+        "LDAPS_WS": "float64",
+        "LDAPS_LH": "float64",
+        "LDAPS_CC1": "float64",
+        "LDAPS_CC2": "float64",
+        "LDAPS_CC3": "float64",
+        "LDAPS_CC4": "float64",
+        "LDAPS_PPT1": "float64",
+        "LDAPS_PPT2": "float64",
+        "LDAPS_PPT3": "float64",
+        "LDAPS_PPT4": "float64",
+        "lat": "float64",
+        "lon": "float64",
+        "DEM": "float64",
+        "Slope": "float64",
+        "Solar radiation": "float64",
+        "Next_Tmax": "float64"
+      }
+    },
+    "CCPP": {
+      "dataset_name": "CCPP",
+      "dataset_path": "datasets/CCPP",
+      "dataset_type": "data",
+      "pred_type": "regression",
+      "target": "PE",
+      "dtype": {
+        "AT":  "float64",
+        "V":  "float64",
+        "AP":  "float64",
+        "RH":  "float64",
+        "PE":  "float64"
+      }
+    }
+  }
 }

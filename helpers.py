@@ -8,6 +8,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from sys import platform
+
 SEPARATOR = '\\' if platform == 'win32' else '/'
 
 
@@ -62,6 +63,20 @@ def load_data(dataset: str, get_config=False):
                         "symmetry_3", "fractal_dimension_3"]
 
         df = pd.read_csv(rf"datasets{SEPARATOR}breastCancer{SEPARATOR}wdbc.data", delimiter=",", names=column_names,
+                         dtype=dtypes, engine='python')
+
+    elif dataset == "tempForecast":
+        dtypes = config["tempForecast"]["dtype"]
+
+
+        df = pd.read_csv(rf"datasets{SEPARATOR}tempForecast{SEPARATOR}Bias_correction_ucl.csv", delimiter=",",
+                         dtype=dtypes, engine='python')
+
+    elif dataset == "CCPP":
+        dtypes = config["CCPP"]["dtype"]
+
+
+        df = pd.read_csv(rf"datasets{SEPARATOR}CCPP{SEPARATOR}Folds5x2_pp.csv", delimiter=",",
                          dtype=dtypes, engine='python')
 
     else:
