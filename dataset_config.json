@@ -148,6 +148,50 @@
         "RH":  "float64",
         "PE":  "float64"
       }
-    }
+     },
+     "abalone": {
+	  "dataset_name": "abalone",
+      "dataset_path": "datasets/abalone",
+      "dataset_type": "data",
+      "pred_type": "regression",
+      "target": "Rings",
+      "dtype": {
+			"Sex":  			"category",
+			"Length":    		"float64",
+			"Diameter":   		"float64",
+			"Height":     		"float64",
+			"Whole weight": 	"float64",
+			"Shucked weight":   "float64",
+			"Viscera weight":   "float64",
+			"Shell weight":     "float64",
+			"Rings":        	"int64"
+      }
+	 },
+	 "bank": {
+	  "dataset_name": "bank",
+      "dataset_path": "datasets/bank",
+      "dataset_type": "data",
+      "pred_type": "classification",
+      "target": "y",
+      "dtype": {
+			"age"      :    "int64"
+			"job"      :    "category"
+			"marital"  :    "category"
+			"education":    "category"
+			"default"  :    "category"
+			"balance"  :    "int64"
+			"housing"  :    "category"
+			"loan"     :    "category"
+			"contact"  :    "category"
+			"day"      :    "int64"
+			"month"    :    "category"
+			"duration" :    "int64"
+			"campaign" :    "int64"
+			"pdays"    :    "int64"
+			"previous" :    "int64"
+			"poutcome" :    "category"
+			"y"        :   "category"
+		}
+	 }
   }
 }
