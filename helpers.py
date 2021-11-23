@@ -80,6 +80,21 @@ def load_data(dataset: str, get_config=False):
 
         df = pd.read_csv(rf"datasets{SEPARATOR}CCPP{SEPARATOR}Folds5x2_pp.csv", delimiter=",",
                          dtype=dtypes, engine='python')
+        
+    elif dataset == "bank":
+        dtypes = config["bank"]["dtype"]
+
+
+        df = pd.read_csv(rf"datasets{SEPARATOR}bank{SEPARATOR}bank.csv", delimiter=";",
+                         dtype=dtypes, engine='python')
+
+    elif dataset == "abalone":
+        dtypes = config["abalone"]["dtype"]
+
+
+        df = pd.read_csv(rf"datasets{SEPARATOR}abalone{SEPARATOR}abalone.csv", delimiter=",",
+                         dtype=dtypes, engine='python')
+
 
     else:
         raise NameError("Not implemented yet")
