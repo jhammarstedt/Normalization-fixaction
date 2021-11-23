@@ -174,22 +174,22 @@
       "pred_type": "classification",
       "target": "y",
       "dtype": {
-			"age"      :    "int64"
-			"job"      :    "category"
-			"marital"  :    "category"
-			"education":    "category"
-			"default"  :    "category"
-			"balance"  :    "int64"
-			"housing"  :    "category"
-			"loan"     :    "category"
-			"contact"  :    "category"
-			"day"      :    "int64"
-			"month"    :    "category"
-			"duration" :    "int64"
-			"campaign" :    "int64"
-			"pdays"    :    "int64"
-			"previous" :    "int64"
-			"poutcome" :    "category"
+			"age"      :    "int64",
+			"job"      :    "category",
+			"marital"  :    "category",
+			"education":    "category",
+			"default"  :    "category",
+			"balance"  :    "int64",
+			"housing"  :    "category",
+			"loan"     :    "category",
+			"contact"  :    "category",
+			"day"      :    "int64",
+			"month"    :    "category",
+			"duration" :    "int64",
+			"campaign" :    "int64",
+			"pdays"    :    "int64",
+			"previous" :    "int64",
+			"poutcome" :    "category",
 			"y"        :   "category"
 		}
 	 }
