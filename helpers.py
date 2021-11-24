@@ -52,8 +52,8 @@ def load_data(dataset: str, get_config=False):
         df = pd.read_csv(
             cwd + SEPARATOR + 'datasets' + SEPARATOR + 'compHardware' + SEPARATOR + 'machine.data',
             delimiter=",", dtype=dtypes, index_col=False, engine='python')
-        #df = df.iloc[:, 2:]
-        #df = df.sample(frac=1).reset_index(drop=True)
+        # df = df.iloc[:, 2:]
+        # df = df.sample(frac=1).reset_index(drop=True)
 
     elif dataset == "breastCancer":
         dtypes = config["breastCancer"]["dtype"]
@@ -70,27 +70,23 @@ def load_data(dataset: str, get_config=False):
     elif dataset == "tempForecast":
         dtypes = config["tempForecast"]["dtype"]
 
-
         df = pd.read_csv(rf"datasets{SEPARATOR}tempForecast{SEPARATOR}Bias_correction_ucl.csv", delimiter=",",
                          dtype=dtypes, engine='python')
 
     elif dataset == "CCPP":
         dtypes = config["CCPP"]["dtype"]
 
-
         df = pd.read_csv(rf"datasets{SEPARATOR}CCPP{SEPARATOR}Folds5x2_pp.csv", delimiter=",",
                          dtype=dtypes, engine='python')
-        
+
     elif dataset == "bank":
         dtypes = config["bank"]["dtype"]
-
 
         df = pd.read_csv(rf"datasets{SEPARATOR}bank{SEPARATOR}bank.csv", delimiter=";",
                          dtype=dtypes, engine='python')
 
     elif dataset == "abalone":
         dtypes = config["abalone"]["dtype"]
-
 
         df = pd.read_csv(rf"datasets{SEPARATOR}abalone{SEPARATOR}abalone.csv", delimiter=",",
                          dtype=dtypes, engine='python')

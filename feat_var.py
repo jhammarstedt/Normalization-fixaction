@@ -7,10 +7,20 @@ dataset = get_datasets()
 def get_ds_mean_var(ds):
     df = load_data(ds)
     df = df.select_dtypes(include=[np.float])
+
+    # getting variance of features' mean
     means = list(df.mean())
-    var = np.var(means)
-    return var
+    outer_var = np.var(means)
+
+    # getting average variance
+    var = list(df.var())
+    inner_var = np.mean(var)
+
+    return outer_var, inner_var
 
 for ds in dataset:
-    var = get_ds_mean_var(ds)
-    print(f"{ds}: {var}")
+    outer_var, inner_var = get_ds_mean_var(ds)
+    print("--------------------------------------")
+    print(f"{ds}")
+    print(f"Variance of features' mean: {outer_var}")
+    print(f"Average variance: {inner_var}")
