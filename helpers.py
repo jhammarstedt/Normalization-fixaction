@@ -126,3 +126,8 @@ def read_data(dataset_name):
     datasets[f"{dataset_name}_UnNorm"] = {"data": load_data(dataset_name), "target": config[dataset_name]["target"],
                                           "pred_type": config[dataset_name]["pred_type"]}
     return datasets
+
+
+def save_json(file, path):
+    with open(path, 'w') as f:
+        json.dump(file, f, indent=4)

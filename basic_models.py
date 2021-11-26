@@ -1,16 +1,22 @@
 # Training pipeline for KNN, logistic regression and SVM
+import numpy as np
+import warnings
+
 from sklearn.svm import SVC, SVR
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from sklearn.exceptions import ConvergenceWarning
 from xgboost.sklearn import XGBRegressor
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
 from pprint import pprint
 
 
-from helpers import evaluate_results, read_data
+from helpers import evaluate_results, read_data, save_json
 
+
+warnings.simplefilter("ignore", category=ConvergenceWarning)
 
 class ModelClass:
     def __init__(self, data: dict, seed=0) -> None:
@@ -21,6 +27,7 @@ class ModelClass:
         """#!ISAK From this method you can return whatever you want to get to your output """
 
         results = {}
+        best_params = {}
         for dataset_name in self.datasets.keys():
 
             print(f"#############DATASET NAME AND METHOD: {dataset_name} ############")
@@ -32,9 +39,13 @@ class ModelClass:
             target = self.datasets[dataset_name]["target"]
 
             if self.datasets[dataset_name]["pred_type"] == "regression":
-                model_class = ["svr", "XGBR"]
+                # model_class = ["svr", "XGBR"]
+                # model_class = []
+                continue
             elif self.datasets[dataset_name]["pred_type"] == "classification":
                 model_class = ["svm", "knn", "logreg"]
+                # model_class = ['svm', "knn"]
+
             else:  # both, run all
                 raise TypeError("Prediction type not supported")
                 # model_class = ["svm","knn","logreg","XGBR","svr"]
@@ -44,12 +55,14 @@ class ModelClass:
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=self.seed)
 
             results[dataset_name] = {"pred_type": self.datasets[dataset_name]["pred_type"]}
+            best_params[dataset_name] = {}
             for model in model_class:
                 # Runs the model and returns the predictions on the test set
-                y_pred = train_model(X_train, X_test, y_train, y_test, model_name=model, grid_search=grid_search)
+                y_pred, params = train_model(X_train, X_test, y_train, y_test, model_name=model, grid_search=grid_search)
                 results[dataset_name][model] = {'pred': list(y_pred), 'true': list(y_test)}
+                best_params[dataset_name][model] = params
 
-        return results
+        return results, best_params
 
 
 def train_model(X_train, X_test, y_train, y_test, model_name=None, params=None, grid_search=False, grid_search_params=None):
@@ -69,17 +82,18 @@ def train_model(X_train, X_test, y_train, y_test, model_name=None, params=None, 
         knn = KNeighborsClassifier(**params)
         if grid_search_params is None:
             grid_search_params = {
-                'n_neighbors': [3, 5],
+                'n_neighbors': [3, 5, 10, 20, 50, 100],
                 'weights': ['uniform', 'distance'],
                 'algorithm': ['ball_tree', 'kd_tree']
             }
         if grid_search and grid_search_params:
             print("Performing grid search over supplied parameteres")
             pprint(grid_search_params)
-            clf = GridSearchCV(knn, grid_search_params, n_jobs=4)
+            clf = GridSearchCV(knn, grid_search_params, n_jobs=4, cv=3)
             clf.fit(X_train.values, y_train)
             print('Best parameters found:')
             pprint(clf.best_params_)
+            params = clf.best_params_
             knn.set_params(**clf.best_params_)
 
         knn.fit(X_train.values, y_train)
@@ -89,22 +103,36 @@ def train_model(X_train, X_test, y_train, y_test, model_name=None, params=None, 
 
     elif model_name == "svm":
         print("**********SVM************")
-        svm = SVC(**params)
+        svm = SVC(**params, max_iter=30000)
 
         if grid_search_params is None:
-            grid_search_params = {
-                'C': [1, 2],
-                'kernel': ['linear', 'poly', 'rbf'],
-                'degree': [2, 3]
-            }
+            grid_search_params = [
+                {
+                    'C': [1, 10, 100, 1000],
+                    'kernel': ['rbf'],
+                    'gamma': [0.1, 0.001, 0.0001],
+                    # 'degree': [2, 3]
+                },
+                {
+                    'C': [1, 10, 100, 1000],
+                    'kernel': ['poly'],
+                    'gamma': [1, 0.1, 0.001, 0.0001],
+                    'degree': [2, 3]
+                },
+                {
+                    'C': [1, 10, 100, 1000],
+                    'kernel': ['linear']
+                }
+            ]
 
         if grid_search and grid_search_params:
             print("Performing grid search over supplied parameteres")
             pprint(grid_search_params)
-            clf = GridSearchCV(svm, grid_search_params, n_jobs=4)
+            clf = GridSearchCV(svm, grid_search_params, n_jobs=4, cv=3)
             clf.fit(X_train.values, y_train)
             print('Best parameters found:')
             pprint(clf.best_params_)
+            params = clf.best_params_
             svm.set_params(**clf.best_params_)
 
         svm.fit(X_train, y_train)
@@ -117,17 +145,18 @@ def train_model(X_train, X_test, y_train, y_test, model_name=None, params=None, 
 
         if grid_search_params is None:
             grid_search_params = {
-                'C': [1, 2],
-                'penalty': ['l1', 'l2', 'elasticnet', 'none'],
+                "C": np.logspace(-3,3,7),
+                "penalty": ["l1", "l2"]
             }
 
         if grid_search and grid_search_params:
             print("Performing grid search over supplied parameteres")
             pprint(grid_search_params)
-            clf = GridSearchCV(logreg, grid_search_params, n_jobs=4)
+            clf = GridSearchCV(logreg, grid_search_params, n_jobs=4, cv=3)
             clf.fit(X_train.values, y_train)
             print('Best parameters found:')
             pprint(clf.best_params_)
+            params = clf.best_params_
             logreg.set_params(**clf.best_params_)
 
         logreg.fit(X_train, y_train)
@@ -153,10 +182,11 @@ def train_model(X_train, X_test, y_train, y_test, model_name=None, params=None, 
         if grid_search and grid_search_params:
             print("Performing grid search over supplied parameteres")
             pprint(grid_search_params)
-            clf = GridSearchCV(xgb, grid_search_params, n_jobs=4)
+            clf = GridSearchCV(xgb, grid_search_params, n_jobs=4, cv=3)
             clf.fit(X_train.values, y_train)
             print('Best parameters found:')
             pprint(clf.best_params_)
+            params = clf.best_params_
             xgb.set_params(**clf.best_params_)
 
         xgb.fit(X_train, y_train)
@@ -177,10 +207,11 @@ def train_model(X_train, X_test, y_train, y_test, model_name=None, params=None, 
         if grid_search and grid_search_params:
             print("Performing grid search over supplied parameteres")
             pprint(grid_search_params)
-            clf = GridSearchCV(svr, grid_search_params, n_jobs=4)
+            clf = GridSearchCV(svr, grid_search_params, n_jobs=4, cv=3)
             clf.fit(X_train.values, y_train)
             print('Best parameters found:')
             pprint(clf.best_params_)
+            params = clf.best_params_
             svr.set_params(**clf.best_params_)
 
         svr.fit(X_train, y_train)
@@ -190,10 +221,10 @@ def train_model(X_train, X_test, y_train, y_test, model_name=None, params=None, 
     else:
         raise TypeError("Model type not supported")
 
-    return y_pred
+    return y_pred, params
 
 
-def run_basic_models(args, dataset):
+def run_basic_models(args, dataset, gridsearch=False):
     """Function that runs the model training"""
     data = read_data(dataset)
     if data is None:
@@ -201,11 +232,18 @@ def run_basic_models(args, dataset):
     else:
         print("Running basic models for dataset {}".format(dataset))
         models = ModelClass(data, args.seed)
-        results = models.run_models()
+        results, params = models.run_models(grid_search=gridsearch)
+        save_json(params, 'output/results/gridsearch/params_{}.json'.format(dataset))
         return results
 
 
 if __name__ == "__main__":
-    data = read_data('adult')
+    data = read_data('bank')
     model = ModelClass(data)
-    model.run_models(grid_search=True)
+    result, best_params = model.run_models(grid_search=True)
+    pprint(best_params)
+    # pprint(result)
+    save_json(best_params, 'output/results/gridsearch/params_bank2.json')
+    # save_json(result, 'output/results/final_results/bank.json')
+
+

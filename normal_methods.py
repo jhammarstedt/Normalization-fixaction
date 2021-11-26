@@ -138,11 +138,12 @@ class Normalizator:
         self.df[col] = le.transform(self.df[col])
         return self.df
 
-# if __name__ == "__main__":
-#     n = Normalizator("adult")
-#     n.normalize(method="minmax", save=True)
-#     print(n.df.describe())
-#     print(n.df_norm.describe())
-#     # n.visuals()
+if __name__ == "__main__":
+    n = Normalizator("bank")
+    for m in ["zscore", "minmax", "tanh", "variablescaling"]:
+        n.normalize(method=m, save=True)
+    # print(n.df.describe())
+    # print(n.df_norm.describe())
+    # n.visuals()
 
 # n.run_model(model="knn")
