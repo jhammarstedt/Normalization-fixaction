@@ -1,0 +1,83 @@
+{
+    "breastCancer_minmax.csv": {
+        "svm": {
+            "C": 10,
+            "kernel": "linear"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 10,
+            "weights": "distance"
+        },
+        "logreg": {
+            "C": 10.0,
+            "penalty": "l2"
+        }
+    },
+    "breastCancer_variablescaling.csv": {
+        "svm": {
+            "C": 100,
+            "gamma": 0.0001,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 10,
+            "weights": "distance"
+        },
+        "logreg": {
+            "C": 0.1,
+            "penalty": "l2"
+        }
+    },
+    "breastCancer_zscore.csv": {
+        "svm": {
+            "C": 100,
+            "gamma": 0.001,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 5,
+            "weights": "uniform"
+        },
+        "logreg": {
+            "C": 0.1,
+            "penalty": "l2"
+        }
+    },
+    "breastCancer_tanh.csv": {
+        "svm": {
+            "C": 10,
+            "degree": 3,
+            "gamma": 1,
+            "kernel": "poly"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 5,
+            "weights": "uniform"
+        },
+        "logreg": {
+            "C": 1000.0,
+            "penalty": "l2"
+        }
+    },
+    "breastCancer_UnNorm": {
+        "svm": {
+            "C": 1,
+            "degree": 2,
+            "gamma": 0.0001,
+            "kernel": "poly"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 10,
+            "weights": "uniform"
+        },
+        "logreg": {
+            "C": 0.001,
+            "penalty": "l2"
+        }
+    }
+}

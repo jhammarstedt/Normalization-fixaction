@@ -1,0 +1,82 @@
+{
+    "bank_tanh.csv": {
+        "svm": {
+            "C": 10,
+            "gamma": 0.1,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 5,
+            "weights": "uniform"
+        },
+        "logreg": {
+            "C": 100.0,
+            "penalty": "l2"
+        }
+    },
+    "bank_variablescaling.csv": {
+        "svm": {
+            "C": 1,
+            "gamma": 0.1,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 10,
+            "weights": "distance"
+        },
+        "logreg": {
+            "C": 0.1,
+            "penalty": "l2"
+        }
+    },
+    "bank_minmax.csv": {
+        "svm": {
+            "C": 10,
+            "gamma": 0.1,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 10,
+            "weights": "uniform"
+        },
+        "logreg": {
+            "C": 100.0,
+            "penalty": "l2"
+        }
+    },
+    "bank_zscore.csv": {
+        "svm": {
+            "C": 1,
+            "gamma": 0.1,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 10,
+            "weights": "distance"
+        },
+        "logreg": {
+            "C": 1.0,
+            "penalty": "l2"
+        }
+    },
+    "bank_UnNorm": {
+        "svm": {
+            "C": 1,
+            "gamma": 0.0001,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 50,
+            "weights": "distance"
+        },
+        "logreg": {
+            "C": 0.001,
+            "penalty": "l2"
+        }
+    }
+}

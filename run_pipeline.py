@@ -70,7 +70,7 @@ def main():
             normalize(dataset, verbose=False)
             if args.model in ["all", "basic"]:
                 print('----BASIC models----')
-                output_dataset_basic = run_basic_models(args, dataset)
+                output_dataset_basic = run_basic_models(args, dataset, gridsearch=True)
                 output_basic = {**output_basic, **output_dataset_basic}
 
             if args.model in ["all", "adv"]:

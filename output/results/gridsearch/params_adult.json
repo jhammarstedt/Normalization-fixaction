@@ -1,0 +1,98 @@
+{
+    "adult_variableScaling.csv": {
+        "svm": {
+            "C": 100,
+            "gamma": 0.001,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 20,
+            "weights": "uniform"
+        },
+        "logreg": {
+            "C": 1.0,
+            "penalty": "l2"
+        }
+    },
+    "adult_tanh.csv": {
+        "svm": {
+            "C": 10,
+            "gamma": 0.1,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 20,
+            "weights": "uniform"
+        },
+        "logreg": {
+            "C": 10.0,
+            "penalty": "l2"
+        }
+    },
+    "adult_variablescaling.csv": {
+        "svm": {
+            "C": 100,
+            "gamma": 0.001,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 20,
+            "weights": "uniform"
+        },
+        "logreg": {
+            "C": 1.0,
+            "penalty": "l2"
+        }
+    },
+    "adult_zscore.csv": {
+        "svm": {
+            "C": 100,
+            "gamma": 0.001,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 20,
+            "weights": "uniform"
+        },
+        "logreg": {
+            "C": 10.0,
+            "penalty": "l2"
+        }
+    },
+    "adult_minmax.csv": {
+        "svm": {
+            "C": 1000,
+            "gamma": 0.001,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 50,
+            "weights": "distance"
+        },
+        "logreg": {
+            "C": 100.0,
+            "penalty": "l2"
+        }
+    },
+    "adult_UnNorm": {
+        "svm": {
+            "C": 1,
+            "gamma": 0.1,
+            "kernel": "rbf"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 50,
+            "weights": "distance"
+        },
+        "logreg": {
+            "C": 0.1,
+            "penalty": "l2"
+        }
+    }
+}
