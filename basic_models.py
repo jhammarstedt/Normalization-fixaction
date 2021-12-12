@@ -39,12 +39,13 @@ class ModelClass:
             target = self.datasets[dataset_name]["target"]
 
             if self.datasets[dataset_name]["pred_type"] == "regression":
-                # model_class = ["svr", "XGBR"]
+                model_class = ["svr", "XGBR"]
                 # model_class = []
-                continue
             elif self.datasets[dataset_name]["pred_type"] == "classification":
-                model_class = ["svm", "knn", "logreg"]
+                # model_class = ["svm", "knn", "logreg"]
                 # model_class = ['svm', "knn"]
+                model_class = []
+                continue
 
             else:  # both, run all
                 raise TypeError("Prediction type not supported")
@@ -201,11 +202,24 @@ def train_model(X_train, X_test, y_train, y_test, model_name=None, params=None, 
         print("**********SVR************")
         svr = SVR(**params)
         if grid_search_params is None:
-            grid_search_params = {
-                'C': [1, 2],
-                'kernel': ['linear', 'poly', 'rbf'],
-                'degree': [2, 3]
-            }
+            grid_search_params = [
+                {
+                    'C': [1, 10, 100, 1000],
+                    'kernel': ['rbf'],
+                    'gamma': [0.1, 0.001, 0.0001],
+                    # 'degree': [2, 3]
+                },
+                {
+                    'C': [1, 10, 100, 1000],
+                    'kernel': ['poly'],
+                    'gamma': [1, 0.1, 0.001, 0.0001],
+                    'degree': [2, 3]
+                },
+                {
+                    'C': [1, 10, 100, 1000],
+                    'kernel': ['linear']
+                }
+            ]
 
         if grid_search and grid_search_params:
             print("Performing grid search over supplied parameteres")
@@ -233,7 +247,7 @@ def run_basic_models(args, dataset, gridsearch=False):
     if data is None:
         return "No data available for dataset"
     else:
-        params_path = 'output/results/gridsearch/params_{}.json'.format(dataset)
+        params_path = 'output/results/gridsearch/params2_{}.json'.format(dataset)
         print("Running basic models for dataset {}".format(dataset))
         models = ModelClass(data, args.seed)
         params = {}
@@ -247,12 +261,12 @@ def run_basic_models(args, dataset, gridsearch=False):
 
 
 if __name__ == "__main__":
-    data = read_data('bank')
+    data = read_data('wine')
     model = ModelClass(data)
     result, best_params = model.run_models(grid_search=True)
     pprint(best_params)
     # pprint(result)
-    save_json(best_params, 'output/results/gridsearch/params_bank2.json')
+    save_json(best_params, 'output/results/gridsearch/params_wine2.json')
     # save_json(result, 'output/results/final_results/bank.json')
 
 
