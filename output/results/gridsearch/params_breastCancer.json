@@ -1,19 +1,4 @@
 {
-    "breastCancer_minmax.csv": {
-        "svm": {
-            "C": 10,
-            "kernel": "linear"
-        },
-        "knn": {
-            "algorithm": "ball_tree",
-            "n_neighbors": 10,
-            "weights": "distance"
-        },
-        "logreg": {
-            "C": 10.0,
-            "penalty": "l2"
-        }
-    },
     "breastCancer_variablescaling.csv": {
         "svm": {
             "C": 100,
@@ -43,6 +28,21 @@
         },
         "logreg": {
             "C": 0.1,
+            "penalty": "l2"
+        }
+    },
+    "breastCancer_minmax.csv": {
+        "svm": {
+            "C": 10,
+            "kernel": "linear"
+        },
+        "knn": {
+            "algorithm": "ball_tree",
+            "n_neighbors": 10,
+            "weights": "distance"
+        },
+        "logreg": {
+            "C": 10.0,
             "penalty": "l2"
         }
     },

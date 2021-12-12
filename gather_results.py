@@ -215,7 +215,7 @@ def evaluate(files, output_dir):
         lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(list))))
     loss_res = collections.defaultdict(
         lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(list))))
-    print("CURRENT FILE",files)
+    print("CURRENT FILE", files)
     for file in files:
         output = open(file, "rb")
         output = pickle.load(output)
@@ -352,10 +352,18 @@ def update_line_chart(file_name, all_names, prevent_initial_call=False):
 
 if __name__ == '__main__':
    
-    all_names = os.listdir(f"output{SEPARATOR}results{SEPARATOR}predictions")
-    
-    # getting everything until the timestamp
-    grouped_names = list(set([i.partition(")")[0] for i in all_names]))
-
-    app.layout = make_layout(grouped_names, all_names)
-    app.run_server(debug=True)
+    # all_names = os.listdir(f"output{SEPARATOR}results{SEPARATOR}predictions")
+    #
+    # # getting everything until the timestamp
+    # grouped_names = list(set([i.partition(")")[0] for i in all_names]))
+    #
+    # app.layout = make_layout(grouped_names, all_names)
+    # app.run_server(debug=True)
+    path = '/Users/matej/repos/Normalization-fixaction/output/results/predictions/'
+    files = [path + '26112021 155822_basic.pkl',
+             path + '29112021 110437_basic.pkl',
+             path + '29112021 111536_basic.pkl',
+             path + '29112021 112423_basic.pkl',
+             path + '29112021 112706_basic.pkl']
+    evaluate(files,
+             'output')

@@ -131,3 +131,10 @@ def read_data(dataset_name):
 def save_json(file, path):
     with open(path, 'w') as f:
         json.dump(file, f, indent=4)
+
+
+def load_json(path):
+    with open(path, 'r') as f:
+        data = json.load(f)
+    return data
+

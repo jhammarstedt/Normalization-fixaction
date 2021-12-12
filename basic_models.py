@@ -13,7 +13,7 @@ from sklearn.model_selection import GridSearchCV
 from pprint import pprint
 
 
-from helpers import evaluate_results, read_data, save_json
+from helpers import evaluate_results, read_data, save_json, load_json
 
 
 warnings.simplefilter("ignore", category=ConvergenceWarning)
@@ -23,7 +23,7 @@ class ModelClass:
         self.datasets = data
         self.seed = seed
 
-    def run_models(self, grid_search=False):
+    def run_models(self, params=None, grid_search=False):
         """#!ISAK From this method you can return whatever you want to get to your output """
 
         results = {}
@@ -58,9 +58,12 @@ class ModelClass:
             best_params[dataset_name] = {}
             for model in model_class:
                 # Runs the model and returns the predictions on the test set
-                y_pred, params = train_model(X_train, X_test, y_train, y_test, model_name=model, grid_search=grid_search)
+                model_params = {}
+                if not grid_search and params[dataset_name][model]:
+                    model_params = params[dataset_name][model]
+                y_pred, best_model_params = train_model(X_train, X_test, y_train, y_test, params=model_params, model_name=model, grid_search=grid_search)
                 results[dataset_name][model] = {'pred': list(y_pred), 'true': list(y_test)}
-                best_params[dataset_name][model] = params
+                best_params[dataset_name][model] = best_model_params
 
         return results, best_params
 
@@ -230,10 +233,16 @@ def run_basic_models(args, dataset, gridsearch=False):
     if data is None:
         return "No data available for dataset"
     else:
+        params_path = 'output/results/gridsearch/params_{}.json'.format(dataset)
         print("Running basic models for dataset {}".format(dataset))
         models = ModelClass(data, args.seed)
-        results, params = models.run_models(grid_search=gridsearch)
-        save_json(params, 'output/results/gridsearch/params_{}.json'.format(dataset))
+        params = {}
+        if not gridsearch:
+            params = load_json(params_path)
+        results, params = models.run_models(params=params, grid_search=gridsearch)
+
+        if not gridsearch:
+            save_json(params, params_path)
         return results
 
 
