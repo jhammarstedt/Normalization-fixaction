@@ -1,6 +1,6 @@
 # Normalization-fixaction
 <img src ="https://miro.medium.com/max/271/0*d5_CPfpuJ2uIjIk3" align= "right">
-This project in collaboration with Spotify, focusing on the effect of normalization, including standardizing, scaling and more, on the training and inference of machine learning models.A lot of focus in machine learning is on models and less so on data and how to treat it. In this project we will focus on the impact of data on model training.
+This project in collaboration with Spotify, focusing on the effect of normalization, including standardizing, scaling and more, on the training and inference of machine learning models. A lot of focus in machine learning is on models and less so on data and how to treat it. In this project we will focus on the impact of data on model training.
 
 ## Authors
 * Johan Hammarstedt - [jhammarstedt](https://github.com/jhammarstedt)
@@ -12,7 +12,7 @@ This project in collaboration with Spotify, focusing on the effect of normalizat
 
 ```pip install -r requirements.txt ```
 
-Use the dataset_config to write info and call the dataset, so we can do such between the files
+Use the dataset_config to write info and call the dataset
 
 Once everything is done we run it all from the run_pipeline.py script 
 
@@ -37,16 +37,20 @@ To run for everything:
 Note that running for all datasets is not working yet since all have yet to be added.
 
 ### Parameters
-datasets: 
-
+#### Datasets: 
 * wine
 * compHardware
 * adult
 * breastCancer
 * mechanicalHardware
 
-methods:
+#### methods:
 * zscore
 * tanh
 * minmax
 * variablescaling
+
+#### Models:
+* Networks (Regression with ReLU and Classification with Sigmoid) - Testing with and without Batch norm
+* SVM and SVR
+* KNN
